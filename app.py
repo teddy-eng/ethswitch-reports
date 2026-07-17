@@ -2,10 +2,12 @@ import streamlit as st
 import tempfile
 import os
 from datetime import date
+
 from generate_ips_report import generate_report
 from generate_qr_report import generate_qr_report
 from generate_p2p_report import generate_p2p_report
 from generate_pos_report import generate_pos_report
+from generate_pos_success_rate_report import generate_pos_success_rate_report
 
 st.set_page_config(
     page_title="EthSwitch Report Generator",
@@ -15,23 +17,25 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-    .header-box {
-        background-color: #1a5276;
-        padding: 1.2rem 1.5rem;
-        border-radius: 10px;
-        margin-bottom: 1.5rem;
-    }
-    .header-box h1 { color: white; font-size: 1.5rem; margin: 0; }
-    .header-box p  { color: #aed6f1; font-size: 0.9rem; margin: 0.3rem 0 0; }
-    .stTabs [data-baseweb="tab"] { font-size: 0.95rem; font-weight: 500; }
+.header-box {
+    background-color: #1a5276;
+    padding: 1.2rem 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+}
+.header-box h1 { color: white; font-size: 1.5rem; margin: 0; }
+.header-box p { color: #aed6f1; font-size: 0.9rem; margin: 0.3rem 0 0; }
+.stTabs [data-baseweb="tab"] { font-size: 0.95rem; font-weight: 500; }
 </style>
 <div class="header-box">
-    <h1>📊 EthSwitch S.C. — Daily Report Generator</h1>
-    <p>Upload your raw data files and download the formatted executive report instantly.</p>
+<h1>📊 EthSwitch S.C. — Daily Report Generator</h1>
+<p>Upload your raw data files and download the formatted executive report instantly.</p>
 </div>
 """, unsafe_allow_html=True)
 
-tab1, tab2, tab3, tab4 = st.tabs(["IPS Report", "QR Report", "P2P Success Rate", "POS Report"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(
+    ["IPS Report", "QR Report", "P2P Success Rate", "POS Report", "POS Success Rate"]
+)
 
 # ── Helper ──
 def save_upload(uploaded_file):
@@ -44,7 +48,7 @@ def save_upload(uploaded_file):
 def download_button(output_path, filename):
     with open(output_path, "rb") as f:
         st.download_button(
-            label="⬇️  Download Report",
+            label="⬇️ Download Report",
             data=f,
             file_name=filename,
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -117,7 +121,7 @@ with tab3:
         else:
             with st.spinner("Generating report..."):
                 try:
-                    error_path   = save_upload(error_file)
+                    error_path = save_upload(error_file)
                     success_path = save_upload(success_file_p2p)
                     out_name = f"IPS-P2P_Success_Rate_Report_for_{report_date_p2p.strftime('%B_%d_%Y')}.xlsx"
                     output_path = os.path.join(tempfile.gettempdir(), out_name)
@@ -146,13 +150,44 @@ with tab4:
         else:
             with st.spinner("Generating report..."):
                 try:
-                    issuer_path   = save_upload(issuer_file)
+                    issuer_path = save_upload(issuer_file)
                     acquirer_path = save_upload(acquirer_file)
                     out_name = f"POS_Successful_With_Value_{report_date_pos.strftime('%B_%d_%Y')}.xlsx"
                     output_path = os.path.join(tempfile.gettempdir(), out_name)
                     from datetime import datetime
                     generate_pos_report(issuer_path, acquirer_path, output_path, datetime.combine(report_date_pos, datetime.min.time()))
                     st.success("✅ Report generated successfully!")
+                    download_button(output_path, out_name)
+                except Exception as e:
+                    st.error(f"Error: {e}")
+
+# ══════════════════════════════
+# TAB 5 — POS Success Rate
+# ══════════════════════════════
+with tab5:
+    st.subheader("POS Success Rate Report")
+    report_date_posr = st.date_input("Report date", value=date.today(), key="posr_date")
+    posr_file = st.file_uploader("Upload SmartVista POS raw transaction export (.xlsx)", type=["xlsx"], key="posr_file")
+
+    if st.button("Generate POS Success Rate Report", use_container_width=True, key="btn_posr"):
+        if not posr_file:
+            st.error("Please upload the raw POS transaction export.")
+        else:
+            with st.spinner("Generating report..."):
+                try:
+                    input_path = save_upload(posr_file)
+                    out_name = f"POS_SUCCESS_RATE_{report_date_posr.strftime('%B_%d_%Y')}.xlsx"
+                    output_path = os.path.join(tempfile.gettempdir(), out_name)
+                    from datetime import datetime
+                    unknown_codes, unmapped_issuers = generate_pos_success_rate_report(
+                        input_path, output_path, datetime.combine(report_date_posr, datetime.min.time())
+                    )
+                    st.success("✅ Report generated successfully!")
+                    if unknown_codes:
+                        st.warning(f"New response code(s) found and added as extra rows: {unknown_codes}. "
+                                   f"Add a remark for them in generate_pos_success_rate_report.py if they recur.")
+                    if unmapped_issuers:
+                        st.warning(f"New bank(s) found and added as new columns: {unmapped_issuers}.")
                     download_button(output_path, out_name)
                 except Exception as e:
                     st.error(f"Error: {e}")
