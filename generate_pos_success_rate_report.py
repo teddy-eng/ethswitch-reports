@@ -53,16 +53,23 @@ BANK_COLUMNS = [
     ("NIB",    ["Nib Int Bank"]),
     ("OB",     ["Oromia Bank"]),
     ("Sinqee", ["Sinqee Bank"]),
-    ("Tsehay", ["Tsehay Bank"]),
+    # ("Tsehay", ["Tsehay Bank"]),  # temporarily excluded per management 2026-07-23 (low volume)
     ("WGB",    ["Wegagen Bank"]),
     ("Zamzam", ["ZamZam Bank"]),
     ("Zemen",  ["Zemen Bank"]),
     # New banks added 2026-07-17 per Teddy's decision — append new ones below.
     ("Hijra",  ["Hijra Bank"]),
-    ("Sidama", ["Sidama Bank"]),
-    ("Siket",  ["Siket Bank"]),
+    # ("Sidama", ["Sidama Bank"]),  # temporarily excluded per management 2026-07-23 (low volume)
+    # ("Siket",  ["Siket Bank"]),   # temporarily excluded per management 2026-07-23 (low volume)
     ("Tsedey", ["Tsedey Bank"]),
 ]
+
+# Banks temporarily excluded from the POS Success Rate Report entirely per
+# management's request (2026-07-23) due to low transaction volume. Their
+# transactions are dropped before any counting/totals — re-enable by
+# uncommenting the corresponding BANK_COLUMNS line above and removing the
+# name here.
+EXCLUDED_ISSUERS = {"Tsehay Bank", "Sidama Bank", "Siket Bank", "Gadaa Bank"}
 
 # Known decline codes (everything except the fixed tail), always displayed ascending.
 KNOWN_CODES = [
@@ -80,36 +87,36 @@ WEGAGEN_EXTRA_CODE = 503
 REMARKS = {
     503: "Not valid EMV transaction",
     504: "Card Operating rule does Not allow this transaction",
-    801: "Bank Core banking system (CBS) or Issuer Switch did not respond",
-    802: "Bank is disconnected from  Ethswitch",
-    804: "Card is not permitted by the system for transaction",
-    805: None,
-    812: "The message was received in wrong format which can not be parsable by the system",
-    821: "Wrong PIN is entered, wrong PIN is entered 3 and more times",
-    827: "Generic Response from the Bank (Exactly not known)",
+    801: "Time out",
+    802: "Issuer not operative",
+    804: "Card is not permitted ",
+    805: "ERROR - 805",
+    812: "Message received was in wrong format",
+    821: "Wrong PIN, Excessive PIN Failures",
+    827: "Do not honor transaction",
     857: "Requested amount was out of range allowed by the issuer.",
-    858: "Error related with Keys",
-    862: "Wrong PIN is entered 3 times & card is not captured by ATM",
-    873: "Card is unknown by Ethswitch",
-    878: "Account is locked in CBS",
-    886: "Card is not in active status",
-    901: "Customer enter invalid PIN or wrong PIN",
-    902: "The transaction is cannot be processed by the system due to some format error",
-    904: "Wrong PIN is entered 3 times & card is captured by ATM",
-    905: "Card is not found in Data base",
+    858: "Processing error during MAC-related HSM command",
+    862: "Excessive PIN failures, do not capture",
+    873: "Issuing BIN is unknown",
+    878: "Account is locked",
+    886: "Card inactive",
+    901: "Invalid PIN",
+    902: "Cannot Process Transaction",
+    904: "Excessive PIN failures, capture",
+    905: "Invalid Card",
     906: "Card Has Expired",
-    909: "The card is not valid or cannot be used for transaction and captured by the ATM",
-    911: "Maximum limit of amount a customer can withdraw is reached",
-    912: "Maximum limit of amount a customer can withdraw is exceeded",
+    909: "Invalid card, capture.",
+    911: "Withdrawal Limit Reached - Retry",
+    912: "Withdrawal Limit Exceeded",
     913: "Transaction Type Not Supported By Institution",
-    914: "wrong Account linked to card",
-    915: "Customer wants to withdraw cash more than what he has in the account",
-    917: "ATM or POS transaction amount limit exceeded",
-    939: "Unknown response code responded by the Bank",
-    952: "This Response code is sent when transaction is done using fallback method",
+    914: "Invalid Account",
+    915: "Insufficient Funds",
+    917: "ATM or POS limit exceeded",
+    939: "No such response code from network",
+    952: "Fraud is suspected",
     959: "System malfunction",
-    979: "Customer has savings account but select checking account while performing transaction or vice versa",
-    988: "Service not available at the  time when transaction is performed",
+    979: "Invalid account type",
+    988: "Service not available at that time",
 }
 
 GREEN, YELLOW, LIGHT_YELLOW, RED = "FF00B050", "FFFFFF00", "FFFFC000", "FFFF0000"
@@ -136,6 +143,7 @@ def generate_pos_success_rate_report(input_path, output_path, report_date):
     """
     df = pd.read_excel(input_path)
     df = df[df["TRANS_TYPE"] == "POS purchase"].copy()
+    df = df[~df["ISSUER"].isin(EXCLUDED_ISSUERS)].copy()
 
     known_codes = set(KNOWN_CODES) | set(RESPONSE_CODE_TAIL) | {-1}
     unknown_codes = sorted(set(df["RESP"].dropna().unique()) - known_codes)
@@ -299,7 +307,7 @@ def generate_pos_success_rate_report(input_path, output_path, report_date):
     remark_header_row = total_post_row + 3
     remark_start_row = remark_header_row + 1
     hc1 = ws.cell(row=remark_header_row, column=1, value="Response Code")
-    hc2 = ws.cell(row=remark_header_row, column=2, value="REMARK")
+    hc2 = ws.cell(row=remark_header_row, column=2, value="Description")
     for hc in (hc1, hc2):
         hc.font = Font(name="Arial", bold=True, size=11, color="FF000000")
         hc.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
