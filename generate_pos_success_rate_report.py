@@ -69,7 +69,7 @@ BANK_COLUMNS = [
 # transactions are dropped before any counting/totals — re-enable by
 # uncommenting the corresponding BANK_COLUMNS line above and removing the
 # name here.
-EXCLUDED_ISSUERS = {"Tsehay Bank", "Sidama Bank", "Siket Bank", "Gadaa Bank"}
+EXCLUDED_ISSUERS = {"Tsehay Bank", "Sidama Bank", "Siket Bank", "Gadaa Bank", "Gedda Bank"}
 
 # Known decline codes (everything except the fixed tail), always displayed ascending.
 KNOWN_CODES = [
@@ -84,7 +84,7 @@ WEGAGEN_LABEL = "WGB"
 WEGAGEN_EXTRA_CODE = 503
 
 # Static remark glossary (carried over verbatim from the template).
-REMARKS = {
+DESCRIPTIONS = {
     503: "Not valid EMV transaction",
     504: "Card Operating rule does Not allow this transaction",
     801: "Time out",
@@ -117,6 +117,41 @@ REMARKS = {
     959: "System malfunction",
     979: "Invalid account type",
     988: "Service not available at that time",
+}
+
+REMARKS = {
+    503: "Not valid EMV transaction",
+    504: "Card Operating rule does Not allow this transaction",
+    801: "Bank Core banking system (CBS) or Issuer Switch did not respond",
+    802: "Bank is disconnected from  Ethswitch",
+    804: "Card is not permitted by the system for transaction ",
+    805: None,
+    812: "The message was received in wrong format which can not be parsable by the system",
+    821: "Wrong PIN is entered, wrong PIN is entered 3 and more times",
+    827: "Generic Response from the Bank (Exactly not known)",
+    857: "Requested amount was out of range allowed by the issuer.",
+    858: "Error related with Keys",
+    862: "Wrong PIN is entered 3 times & card is not captured by ATM",
+    873: "Card is unknown by Ethswitch ",
+    878: "Account is locked in CBS",
+    886: "Card is not in active status",
+    901: "Customer enter invalid PIN or wrong PIN",
+    902: "The transaction is cannot be processed by the system due to some format error",
+    904: "Wrong PIN is entered 3 times & card is captured by ATM",
+    905: "Card is not found in Data base",
+    906: "Card Has Expired",
+    909: "The card is not valid or cannot be used for transaction and captured by the ATM",
+    911: "Maximum limit of amount a customer can withdraw is reached",
+    912: "Maximum limit of amount a customer can withdraw is exceeded",
+    913: "Transaction Type Not Supported By Institution",
+    914: "wrong Account linked to card",
+    915: "Customer wants to withdraw cash more than what he has in the account",
+    917: "ATM or POS transaction amount limit exceeded",
+    939: "Unknown response code responded by the Bank",
+    952: "This Response code is sent when transaction is done using fallback method",
+    959: "System malfunction",
+    979: "Customer has savings account but select checking account while performing transaction or vice versa",
+    988: "Service not available at the  time when transaction is performed",
 }
 
 GREEN, YELLOW, LIGHT_YELLOW, RED = "FF00B050", "FFFFFF00", "FFFFC000", "FFFF0000"
@@ -154,9 +189,17 @@ def generate_pos_success_rate_report(input_path, output_path, report_date):
     raw_issuers = set(df["ISSUER"].dropna().unique())
     unmapped = raw_issuers - mapped_issuers
     if unmapped:
-        # Auto-add unmapped issuers as their own new column so nothing is silently dropped.
+        # Insert unmapped issuers in alphabetical order (by full issuer name)
+        # relative to the existing bank columns, rather than tacking them on
+        # at the end. e.g. "Global Bank" lands between Enat Bank and Hibret Bank.
         for issuer in sorted(unmapped):
-            BANK_COLUMNS.append((issuer.replace(" Bank", "").replace(" Int", ""), [issuer]))
+            new_label = issuer.replace(" Bank", "").replace(" Int", "")
+            insert_at = len(BANK_COLUMNS)
+            for i, (_, issuers) in enumerate(BANK_COLUMNS):
+                if issuer.lower() < issuers[0].lower():
+                    insert_at = i
+                    break
+            BANK_COLUMNS.insert(insert_at, (new_label, [issuer]))
 
     counts = {}
     for label, issuers in BANK_COLUMNS:
@@ -306,23 +349,42 @@ def generate_pos_success_rate_report(input_path, output_path, report_date):
 
     remark_header_row = total_post_row + 3
     remark_start_row = remark_header_row + 1
+    desc_start_col = 2
+    desc_end_col = 4
+    remark_start_col = 5
+
     hc1 = ws.cell(row=remark_header_row, column=1, value="Response Code")
-    hc2 = ws.cell(row=remark_header_row, column=2, value="Description")
-    for hc in (hc1, hc2):
+    hc2 = ws.cell(row=remark_header_row, column=desc_start_col, value="Description")
+    hc3 = ws.cell(row=remark_header_row, column=remark_start_col, value="Remark")
+    ws.merge_cells(start_row=remark_header_row, start_column=desc_start_col,
+                   end_row=remark_header_row, end_column=desc_end_col)
+    ws.merge_cells(start_row=remark_header_row, start_column=remark_start_col,
+                   end_row=remark_header_row, end_column=total_col)
+    for hc in (hc1, hc2, hc3):
         hc.font = Font(name="Arial", bold=True, size=11, color="FF000000")
         hc.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
         hc.border = BORDER
-    for i, (code, remark) in enumerate(REMARKS.items()):
+    for col in range(2, total_col + 1):
+        ws.cell(row=remark_header_row, column=col).border = BORDER
+
+    all_codes = sorted(set(DESCRIPTIONS.keys()) | set(REMARKS.keys()))
+    for i, code in enumerate(all_codes):
         row = remark_start_row + i
         rc = ws.cell(row=row, column=1, value=code)
         rc.font, rc.border = Font(name="Calibri", bold=True, size=11), BORDER
-        rm = ws.cell(row=row, column=2, value=remark)
-        ws.merge_cells(start_row=row, start_column=2, end_row=row, end_column=total_col)
+
+        dm = ws.cell(row=row, column=desc_start_col, value=DESCRIPTIONS.get(code))
+        ws.merge_cells(start_row=row, start_column=desc_start_col, end_row=row, end_column=desc_end_col)
+        dm.font = Font(name="Calibri", size=11, color="FF000000")
+        dm.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+
+        rm = ws.cell(row=row, column=remark_start_col, value=REMARKS.get(code))
+        ws.merge_cells(start_row=row, start_column=remark_start_col, end_row=row, end_column=total_col)
         rm.font = Font(name="Calibri", size=11, color="FF000000")
         rm.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+
         for col in range(2, total_col + 1):
             ws.cell(row=row, column=col).border = BORDER
-        rm.border = BORDER
 
     ws.column_dimensions["A"].width = 20
     for b_i in range(n_banks):
