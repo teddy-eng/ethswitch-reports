@@ -49,19 +49,18 @@ BANK_COLUMNS = [
     ("Dashen", ["Dashen Bank"]),
     ("Enat",   ["Enat Bank"]),
     ("Hibret", ["Hibret Bank"]),
+    ("Hijra",  ["Hijra Bank"]),
     ("Lion",   ["Lion Int Bank"]),
     ("NIB",    ["Nib Int Bank"]),
     ("OB",     ["Oromia Bank"]),
     ("Sinqee", ["Sinqee Bank"]),
     # ("Tsehay", ["Tsehay Bank"]),  # temporarily excluded per management 2026-07-23 (low volume)
+    ("Tsedey", ["Tsedey Bank"]),
     ("WGB",    ["Wegagen Bank"]),
     ("Zamzam", ["ZamZam Bank"]),
     ("Zemen",  ["Zemen Bank"]),
-    # New banks added 2026-07-17 per Teddy's decision — append new ones below.
-    ("Hijra",  ["Hijra Bank"]),
     # ("Sidama", ["Sidama Bank"]),  # temporarily excluded per management 2026-07-23 (low volume)
     # ("Siket",  ["Siket Bank"]),   # temporarily excluded per management 2026-07-23 (low volume)
-    ("Tsedey", ["Tsedey Bank"]),
 ]
 
 # Banks temporarily excluded from the POS Success Rate Report entirely per
