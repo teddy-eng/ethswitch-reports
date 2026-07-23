@@ -271,7 +271,7 @@ def generate_pos_report(issuer_path, acquirer_path, output_path, report_date):
     for col, fmt in [("D", "#,##0"), ("E", "#,##0"), ("F", "#,##0"), ("G", "#,##0")]:
         cell = ws[f"{col}{total_row}"]
         cell.value = f"=SUM({col}{data_start}:{col}{last_data})"
-        cell.font = Font(bold=True, size=14, color=BLACK)
+        cell.font = Font(bold=True, size=14, color=BLACK, underline="single")
         cell.fill = make_fill(WHITE)
         cell.alignment = Alignment(horizontal="center")
         cell.number_format = fmt
