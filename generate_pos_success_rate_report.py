@@ -64,11 +64,13 @@ BANK_COLUMNS = [
     ("Tsedey", ["Tsedey Bank"]),
 ]
 
-# Response codes, in the exact display order used by the template (915 last).
-RESPONSE_CODE_ORDER = [
+# Known decline codes (everything except the fixed tail), always displayed ascending.
+KNOWN_CODES = [
     503, 801, 802, 803, 805, 806, 811, 820, 821, 827, 835, 882, 886,
-    901, 904, 905, 906, 911, 914, 917, 928, 939, 953, 959, 987, 915,
+    901, 904, 905, 906, 911, 912, 914, 917, 928, 939, 953, 959,
 ]
+# These three always stay at the very end, in this exact order, no matter what.
+RESPONSE_CODE_TAIL = [997, 987, 915]
 
 CARDHOLDER_CODES = {821, 901, 904, 906, 911, 912, 914, 915}
 WEGAGEN_LABEL = "WGB"
@@ -135,10 +137,10 @@ def generate_pos_success_rate_report(input_path, output_path, report_date):
     df = pd.read_excel(input_path)
     df = df[df["TRANS_TYPE"] == "POS purchase"].copy()
 
-    known_codes = set(RESPONSE_CODE_ORDER) | {-1}
+    known_codes = set(KNOWN_CODES) | set(RESPONSE_CODE_TAIL) | {-1}
     unknown_codes = sorted(set(df["RESP"].dropna().unique()) - known_codes)
-    _new_codes = [c for c in unknown_codes if c not in RESPONSE_CODE_ORDER]
-    code_order = RESPONSE_CODE_ORDER[:-1] + _new_codes + [RESPONSE_CODE_ORDER[-1]]
+    ascending_part = sorted(set(KNOWN_CODES) | set(unknown_codes))
+    code_order = ascending_part + RESPONSE_CODE_TAIL
 
     mapped_issuers = {i for _, issuers in BANK_COLUMNS for i in issuers}
     raw_issuers = set(df["ISSUER"].dropna().unique())
