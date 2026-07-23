@@ -225,8 +225,8 @@ def generate_pos_report(issuer_path, acquirer_path, output_path, report_date):
         ws[f"C{r}"] = fi
         ws[f"C{r}"].font = Font(size=14)
         ws[f"C{r}"].border = thin_border()
-        # Alternating bank-name shading (green / white), matching the reference template
-        ws[f"C{r}"].fill = make_fill(GREEN) if i % 2 == 0 else make_fill(WHITE)
+        # Bank-name column is solid green on every row, matching the reference template
+        ws[f"C{r}"].fill = make_fill(GREEN)
 
         # Issuer count
         cell_d = ws[f"D{r}"]
@@ -263,7 +263,7 @@ def generate_pos_report(issuer_path, acquirer_path, output_path, report_date):
     total_row = data_start + len(all_fis)
     last_data = total_row - 1
     ws[f"C{total_row}"] = "TOTAL"
-    ws[f"C{total_row}"].font = Font(bold=True, size=14, color=BLACK)
+    ws[f"C{total_row}"].font = Font(bold=False, size=14, color=BLACK)
     ws[f"C{total_row}"].fill = make_fill(GREEN)
     ws[f"C{total_row}"].alignment = Alignment(horizontal="center")
     ws[f"C{total_row}"].border = thin_border()
@@ -272,7 +272,7 @@ def generate_pos_report(issuer_path, acquirer_path, output_path, report_date):
         cell = ws[f"{col}{total_row}"]
         cell.value = f"=SUM({col}{data_start}:{col}{last_data})"
         cell.font = Font(bold=True, size=14, color=BLACK)
-        cell.fill = make_fill(GREEN)
+        cell.fill = make_fill(WHITE)
         cell.alignment = Alignment(horizontal="center")
         cell.number_format = fmt
         cell.border = thin_border()
