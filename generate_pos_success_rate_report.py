@@ -65,11 +65,12 @@ BANK_COLUMNS = [
 ]
 
 # Banks temporarily excluded from the POS Success Rate Report entirely per
-# management's request (2026-07-23) due to low transaction volume. Their
-# transactions are dropped before any counting/totals — re-enable by
-# uncommenting the corresponding BANK_COLUMNS line above and removing the
-# name here.
-EXCLUDED_ISSUERS = {"Tsehay Bank", "Sidama Bank", "Siket Bank", "Gadaa Bank", "Gedda Bank"}
+# management's request. Tsehay/Sidama/Siket were excluded 2026-07-23 for low
+# transaction volume; Gedaa Bank is excluded 2026-07-23 per executive
+# management's decision. Their transactions are dropped before any
+# counting/totals — re-enable by uncommenting the corresponding BANK_COLUMNS
+# line above (if one exists) and removing the name here.
+EXCLUDED_ISSUERS = {"Tsehay Bank", "Sidama Bank", "Siket Bank", "Gedaa Bank"}
 
 # Known decline codes (everything except the fixed tail), always displayed ascending.
 KNOWN_CODES = [
@@ -376,12 +377,12 @@ def generate_pos_success_rate_report(input_path, output_path, report_date):
         dm = ws.cell(row=row, column=desc_start_col, value=DESCRIPTIONS.get(code))
         ws.merge_cells(start_row=row, start_column=desc_start_col, end_row=row, end_column=desc_end_col)
         dm.font = Font(name="Calibri", size=11, color="FF000000")
-        dm.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+        dm.alignment = Alignment(horizontal="left", vertical="top", wrap_text=True)
 
         rm = ws.cell(row=row, column=remark_start_col, value=REMARKS.get(code))
         ws.merge_cells(start_row=row, start_column=remark_start_col, end_row=row, end_column=total_col)
         rm.font = Font(name="Calibri", size=11, color="FF000000")
-        rm.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+        rm.alignment = Alignment(horizontal="left", vertical="top", wrap_text=True)
 
         for col in range(2, total_col + 1):
             ws.cell(row=row, column=col).border = BORDER
