@@ -176,8 +176,7 @@ def generate_qr_report(input_path, output_path, report_date):
     for col, fmt in [("F", '#,##0'), ("G", '#,##0.00'), ("H", '#,##0'), ("I", '#,##0.00')]:
         cell = ws[f"{col}{total_row}"]
         cell.value = f"=SUM({col}{data_start}:{col}{last_data})"
-        cell.font = Font(bold=True, size=11)
-        cell.fill = make_fill(GREEN)
+        cell.font = Font(bold=True, size=11, underline="single")
         cell.border = thin_border()
         cell.alignment = Alignment(horizontal="center")
         cell.number_format = fmt
