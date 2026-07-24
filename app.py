@@ -139,7 +139,10 @@ st.markdown(f"""
     margin-bottom:4px;
     font-family:'Times New Roman', Times, Georgia, serif;
   }}
-  [data-testid="stDateInput"] label {{
+  [data-testid="stDateInput"] label,
+  [data-testid="stDateInput"] label p,
+  [data-testid="stDateInput"] label span,
+  [data-testid="stWidgetLabel"] p {{
     color:#f27421 !important;
     font-weight:700 !important;
     font-size:0.95rem !important;
