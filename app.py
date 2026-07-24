@@ -31,9 +31,13 @@ st.markdown(f"""
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap');
 
-  html, body, [class*="css"] {{
+  html, body, [class*="css"],
+  [data-testid="stAppViewContainer"],
+  [data-testid="stMain"],
+  .main, .block-container {{
     font-family: 'Inter', sans-serif;
-    background-color: #0f142a;
+    background-color: #0f142a !important;
+    color: #ffffff !important;
   }}
 
   /* ── Navbar ── */
@@ -46,339 +50,159 @@ st.markdown(f"""
     border-bottom: 3px solid #f27421;
     margin: -1rem -1rem 0 -1rem;
   }}
-  .navbar-left {{
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-  }}
-  .navbar-left img {{
-    height: 60px;
-    object-fit: contain;
-  }}
-  .navbar-center {{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }}
+  .navbar-left {{ display:flex; align-items:center; justify-content:flex-start; }}
+  .navbar-left img {{ height:60px; object-fit:contain; }}
+  .navbar-center {{ display:flex; flex-direction:column; align-items:center; }}
   .navbar-app-name {{
-    font-family: 'Syne', sans-serif;
-    font-size: 1.6rem;
-    font-weight: 800;
-    color: #f27421;
-    letter-spacing: 0.01em;
-    white-space: nowrap;
+    font-family:'Syne',sans-serif;
+    font-size:1.6rem; font-weight:800;
+    color:#f27421; white-space:nowrap;
   }}
-  .navbar-right {{
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-  }}
-  .navbar-right img {{
-    height: 60px;
-    object-fit: contain;
-  }}
+  .navbar-right {{ display:flex; align-items:center; justify-content:flex-end; }}
+  .navbar-right img {{ height:60px; object-fit:contain; }}
 
   /* ── Hero ── */
   .hero {{
-    background: linear-gradient(135deg, #0f142a 0%, #1a2240 60%, #0f142a 100%);
-    padding: 1.5rem 2.5rem;
-    margin: 0 -1rem 1.5rem -1rem;
-    border-bottom: 1px solid rgba(242,116,33,0.2);
-    text-align: center;
+    background:linear-gradient(135deg,#0f142a 0%,#1a2240 60%,#0f142a 100%);
+    padding:1.5rem 2.5rem;
+    margin:0 -1rem 1.5rem -1rem;
+    border-bottom:1px solid rgba(242,116,33,0.2);
+    text-align:center;
   }}
   .hero-title {{
-    font-family: 'Syne', sans-serif;
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: #f27421;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
+    font-family:'Syne',sans-serif;
+    font-size:1.5rem; font-weight:800;
+    color:#f27421; letter-spacing:0.05em;
+    text-transform:uppercase;
   }}
-  .hero-sub {{
-    font-size: 0.85rem;
-    color: rgba(255,255,255,0.45);
-    margin-top: 0.3rem;
-  }}
+  .hero-sub {{ font-size:0.85rem; color:rgba(255,255,255,0.45); margin-top:0.3rem; }}
 
-  /* ── Tabs ── */
-  .stTabs [data-baseweb="tab-list"] {{
-    background: #1a2240;
-    border-radius: 10px;
-    padding: 4px;
-    border: 1px solid rgba(242,116,33,0.2);
-    gap: 2px;
+  /* ── Custom Tabs ── */
+  .custom-tabs {{
+    display:flex; gap:6px; flex-wrap:wrap;
+    background:#1a2240;
+    padding:6px; border-radius:10px;
+    border:1px solid rgba(242,116,33,0.2);
+    margin-bottom:1rem;
   }}
-  /* Tab overrides — aggressive */
-  button[data-baseweb="tab"] {{
-    color: #ffffff !important;
-    font-weight: 700 !important;
-    font-size: 0.88rem !important;
-    background: rgba(242,116,33,0.1) !important;
-    border: 1px solid rgba(242,116,33,0.35) !important;
-    border-radius: 7px !important;
-    opacity: 1 !important;
+  .custom-tab {{
+    padding:8px 16px;
+    border-radius:7px;
+    font-size:0.88rem; font-weight:800;
+    cursor:pointer;
+    background:#0f142a;
+    color:#f27421 !important;
+    border:1.5px solid #f27421;
+    transition:all 0.2s;
+    white-space:nowrap;
+    letter-spacing:0.02em;
   }}
-  button[data-baseweb="tab"] p {{
-    color: #ffffff !important;
-    font-weight: 700 !important;
-    opacity: 1 !important;
+  .custom-tab:hover {{
+    background:#f27421;
+    color:#ffffff !important;
   }}
-  button[data-baseweb="tab"] * {{
-    color: #ffffff !important;
-    opacity: 1 !important;
+  .custom-tab.active {{
+    background:#f27421 !important;
+    color:#ffffff !important;
+    border:1.5px solid #f27421;
   }}
-  button[data-baseweb="tab"][aria-selected="true"] {{
-    background: #f27421 !important;
-    border: 1px solid #f27421 !important;
-  }}
-  button[data-baseweb="tab"][aria-selected="true"] p {{
-    color: #ffffff !important;
-  }}
-  button[data-baseweb="tab"][aria-selected="false"] p {{
-    color: #ffffff !important;
-    opacity: 1 !important;
-  }}
-  /* Explicit hover/focus/active states — a tab can look dim when the
-     cursor/keyboard focus is on it if these aren't covered separately */
-  button[data-baseweb="tab"]:hover,
-  button[data-baseweb="tab"]:focus,
-  button[data-baseweb="tab"]:active,
-  button[data-baseweb="tab"]:focus-visible {{
-    color: #ffffff !important;
-    opacity: 1 !important;
-    background: rgba(242,116,33,0.2) !important;
-  }}
-  button[data-baseweb="tab"]:hover *,
-  button[data-baseweb="tab"]:focus *,
-  button[data-baseweb="tab"]:active *,
-  button[data-baseweb="tab"]:focus-visible * {{
-    color: #ffffff !important;
-    opacity: 1 !important;
-  }}
-  .stTabs [data-baseweb="tab-highlight"] {{ display: none; }}
 
   /* ── Report cards ── */
   .report-card {{
-    background: #1a2240;
-    border: 1px solid rgba(242,116,33,0.2);
-    border-radius: 14px;
-    padding: 1.6rem 1.8rem;
-    margin-bottom: 1rem;
+    background:#1a2240;
+    border:1px solid rgba(242,116,33,0.2);
+    border-radius:14px;
+    padding:1.6rem 1.8rem;
+    margin-bottom:1rem;
   }}
   .report-card-title {{
-    font-family: 'Syne', sans-serif;
-    font-size: 1.1rem;
-    font-weight: 800;
-    color: #f27421;
-    margin-bottom: 0.2rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    font-family:'Syne',sans-serif;
+    font-size:1.1rem; font-weight:800;
+    color:#f27421; margin-bottom:0.2rem;
   }}
   .report-card-sub {{
-    font-size: 0.82rem;
-    color: rgba(255,255,255,0.4);
-    margin-bottom: 1.4rem;
-    border-left: 3px solid #f27421;
-    padding-left: 0.6rem;
+    font-size:0.82rem; color:rgba(255,255,255,0.4);
+    margin-bottom:1.4rem;
+    border-left:3px solid #f27421; padding-left:0.6rem;
   }}
 
   /* ── Upload label ── */
   .upload-label {{
-    font-size: 0.82rem;
-    font-weight: 700;
-    color: #f27421;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    margin-bottom: 4px;
+    font-size:0.82rem; font-weight:700;
+    color:#f27421; text-transform:uppercase;
+    letter-spacing:0.07em; margin-bottom:4px;
   }}
 
-  /* ── Date label override ── */
-  [data-testid="stDateInput"] label,
-  .stDateInput label {{
-    color: #f27421 !important;
-    font-weight: 700 !important;
-    font-size: 0.85rem !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.07em !important;
+  /* ── Date label ── */
+  [data-testid="stDateInput"] label {{
+    color:#f27421 !important; font-weight:700 !important;
+    font-size:0.85rem !important; text-transform:uppercase !important;
+    letter-spacing:0.07em !important;
   }}
-
-  /* ── Date input ── */
   [data-testid="stDateInput"] input {{
-    background: #0f142a !important;
-    color: #ffffff !important;
-    border: 1px solid rgba(242,116,33,0.3) !important;
-    border-radius: 8px !important;
+    background:#0f142a !important; color:#ffffff !important;
+    border:1px solid rgba(242,116,33,0.3) !important;
+    border-radius:8px !important;
   }}
 
-  /* ── Date-picker calendar popup ── */
-  /* This floats outside the app's main container, so it needs its own
-     explicit dark styling — it was previously unstyled and would render
-     using whatever browser/theme default colors were active. */
-  div[data-baseweb="popover"] {{
-    z-index: 9999 !important;
-  }}
-  div[data-baseweb="calendar"] {{
-    background: #1a2240 !important;
-    border: 1px solid #f27421 !important;
-    border-radius: 10px !important;
-    box-shadow: 0 8px 28px rgba(0,0,0,0.55) !important;
-    padding: 0.4rem !important;
-  }}
-  div[data-baseweb="calendar"] * {{
-    color: #ffffff !important;
-  }}
-  /* Month/year header and nav arrows */
-  div[data-baseweb="calendar"] [data-baseweb="select"] {{
-    background: #0f142a !important;
-    border: 1px solid rgba(242,116,33,0.4) !important;
-    border-radius: 6px !important;
-  }}
-  /* Individual day cells */
-  div[data-baseweb="calendar"] div[role="gridcell"] {{
-    background: transparent !important;
-  }}
-  div[data-baseweb="calendar"] div[role="gridcell"]:hover {{
-    background: rgba(242,116,33,0.25) !important;
-    border-radius: 6px !important;
-  }}
-  /* Selected day */
-  div[data-baseweb="calendar"] div[aria-selected="true"] {{
-    background: #f27421 !important;
-    color: #ffffff !important;
-    border-radius: 6px !important;
-    font-weight: 700 !important;
-  }}
-  /* Today marker */
-  div[data-baseweb="calendar"] div[aria-label*="Today"] {{
-    border: 1px solid #f27421 !important;
-    border-radius: 6px !important;
-  }}
-
-  /* ── File uploader ── */
+  /* ── File uploader — force green Upload button ── */
   [data-testid="stFileUploader"] {{
-    background: #0f142a;
-    border: 1.5px dashed rgba(242,116,33,0.4);
-    border-radius: 10px;
-    padding: 0.3rem;
+    background:#0f142a !important;
+    border:1.5px dashed rgba(242,116,33,0.4) !important;
+    border-radius:10px !important;
   }}
-  [data-testid="stFileUploader"]:hover {{
-    border-color: #f27421;
+  [data-testid="stFileUploaderDropzone"] {{
+    background:#0f142a !important;
   }}
-  [data-testid="stFileUploader"] label {{
-    color: rgba(255,255,255,0.6) !important;
-    font-size: 0.83rem !important;
-  }}
-  /* Browse-files button (previously unstyled → invisible in light theme) */
   [data-testid="stFileUploader"] button,
-  [data-testid="stFileUploaderDropzone"] button,
+  [data-testid="stFileUploaderDropzoneInstructions"] button,
   [data-testid="stBaseButton-secondary"] {{
-    background: #f27421 !important;
-    color: #ffffff !important;
-    border: none !important;
-    border-radius: 7px !important;
-    font-weight: 700 !important;
-  }}
-  [data-testid="stFileUploader"] button:hover {{
-    background: #d9661a !important;
-  }}
-  /* Uploaded filename row + remove (x) icon */
-  [data-testid="stFileUploader"] [data-testid="stFileUploaderFile"],
-  [data-testid="stFileUploaderFileName"] {{
-    color: #ffffff !important;
-  }}
-  [data-testid="stFileUploader"] svg {{
-    fill: #ffffff !important;
-  }}
-
-  /* ── Buttons ── */
-  .stButton > button {{
-    background: #f27421 !important;
-    color: #ffffff !important;
-    border: none !important;
-    border-radius: 9px !important;
-    padding: 0.6rem 1.5rem !important;
-    font-weight: 700 !important;
-    font-size: 0.9rem !important;
-    letter-spacing: 0.02em !important;
-    transition: background 0.2s, transform 0.1s !important;
-    box-shadow: 0 2px 12px rgba(242,116,33,0.3) !important;
-  }}
-  .stButton > button:hover {{
-    background: #d9661a !important;
-    transform: translateY(-1px) !important;
-  }}
-
-  /* ── Download button ── */
-  [data-testid="stDownloadButton"] > button {{
-    background: #0f142a !important;
-    color: #ffffff !important;
-    border: 1.5px solid #f27421 !important;
-    border-radius: 9px !important;
-    font-weight: 700 !important;
-  }}
-  [data-testid="stDownloadButton"] > button:hover {{
-    background: #f27421 !important;
-  }}
-
-  /* ── Footer ── */
-  .footer {{
-    background: #0f142a;
-    border-top: 2px solid #f27421;
-    text-align: center;
-    padding: 1rem;
-    margin: 2rem -1rem -1rem -1rem;
-    font-size: 0.8rem;
-    color: rgba(255,255,255,0.45);
-    letter-spacing: 0.04em;
-  }}
-  .footer span {{ color: #f27421; font-weight: 600; }}
-
-
-  /* ── Force brand colors everywhere — override light theme ── */
-  [data-testid="stAppViewContainer"],
-  [data-testid="stAppViewBlockContainer"],
-  [data-testid="stVerticalBlock"],
-  [data-testid="stMain"],
-  .main, .block-container {{
-    background-color: #0f142a !important;
-    color: #ffffff !important;
-  }}
-  /* Upload zone background */
-  [data-testid="stFileUploader"] section,
-  [data-testid="stFileUploadDropzone"] {{
-    background-color: #0f142a !important;
-    border-color: rgba(242,116,33,0.4) !important;
+    background:#00b050 !important;
+    color:#ffffff !important;
+    border:none !important;
+    border-radius:6px !important;
+    font-weight:700 !important;
   }}
   [data-testid="stFileUploader"] span,
   [data-testid="stFileUploader"] p,
   [data-testid="stFileUploader"] small {{
-    color: rgba(255,255,255,0.6) !important;
-  }}
-  /* Spinner */
-  [data-testid="stSpinner"] {{
-    background: #0f142a !important;
-  }}
-  /* Any stray white divs */
-  div[class*="st-"] {{
-    background-color: transparent;
-  }}
-  /* Success/error boxes */
-  [data-testid="stAlert"][kind="success"] {{
-    background: rgba(0,176,80,0.15) !important;
-    border: 1px solid rgba(0,176,80,0.4) !important;
-    color: #ffffff !important;
-  }}
-  [data-testid="stAlert"][kind="error"] {{
-    background: rgba(255,0,0,0.15) !important;
-    border: 1px solid rgba(255,0,0,0.3) !important;
-    color: #ffffff !important;
+    color:rgba(255,255,255,0.7) !important;
   }}
 
-  /* ── Hide Streamlit chrome ── */
-  #MainMenu, footer, header {{ visibility: hidden; }}
-  .block-container {{ padding-top: 0 !important; max-width: 900px; }}
+  /* ── Main buttons ── */
+  .stButton > button {{
+    background:#f27421 !important; color:#ffffff !important;
+    border:none !important; border-radius:9px !important;
+    padding:0.6rem 1.5rem !important; font-weight:700 !important;
+    font-size:0.9rem !important;
+    box-shadow:0 2px 12px rgba(242,116,33,0.3) !important;
+  }}
+  .stButton > button:hover {{
+    background:#d9661a !important; transform:translateY(-1px) !important;
+  }}
+
+  /* ── Download button ── */
+  [data-testid="stDownloadButton"] > button {{
+    background:#0f142a !important; color:#ffffff !important;
+    border:1.5px solid #f27421 !important; border-radius:9px !important;
+    font-weight:700 !important;
+  }}
+  [data-testid="stDownloadButton"] > button:hover {{
+    background:#f27421 !important;
+  }}
+
+  /* ── Footer ── */
+  .footer {{
+    background:#0f142a; border-top:2px solid #f27421;
+    text-align:center; padding:1rem;
+    margin:2rem -1rem -1rem -1rem;
+    font-size:0.8rem; color:rgba(255,255,255,0.45);
+    letter-spacing:0.04em;
+  }}
+  .footer span {{ color:#f27421; font-weight:600; }}
+
+  #MainMenu, footer, header {{ visibility:hidden; }}
+  .block-container {{ padding-top:0 !important; max-width:900px; }}
 </style>
 
 <!-- Navbar -->
@@ -401,6 +225,44 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
+# ── Custom tab state ──
+if "active_tab" not in st.session_state:
+    st.session_state.active_tab = "IPS"
+
+tabs_def = [
+    ("IPS",  "💳  IPS Report"),
+    ("QR",   "⬛  QR Report"),
+    ("P2P",  "🔄  P2P Success Rate"),
+    ("POS",  "🏪  POS Report"),
+    ("POSR", "✅  POS Success Rate"),
+]
+
+# ── Render custom tab bar ──
+tab_html = '<div class="custom-tabs">'
+for key, label in tabs_def:
+    active_class = "active" if st.session_state.active_tab == key else ""
+    tab_html += f'<div class="custom-tab {active_class}" onclick="selectTab(\'{key}\')">{label}</div>'
+tab_html += "</div>"
+
+tab_html += """
+<script>
+function selectTab(key) {
+  // Use Streamlit's setComponentValue via query param trick
+  const url = new URL(window.location);
+  url.searchParams.set('tab', key);
+  window.history.replaceState({}, '', url);
+  // Find and click the hidden radio
+  const radios = window.parent.document.querySelectorAll('input[type=radio]');
+  radios.forEach(r => { if(r.value === key) r.click(); });
+}
+</script>
+"""
+st.markdown(tab_html, unsafe_allow_html=True)
+
+# ── Use radio for actual tab switching (hidden) ──
+st.markdown("<style>div[data-testid='stRadio']{display:none}</style>", unsafe_allow_html=True)
+active = st.radio("tab", [k for k, _ in tabs_def], key="active_tab", label_visibility="collapsed")
+
 # ── Helpers ──
 def save_upload(uploaded_file):
     suffix = os.path.splitext(uploaded_file.name)[1]
@@ -413,34 +275,23 @@ def download_button(output_path, filename):
     with open(output_path, "rb") as f:
         st.download_button(
             label="⬇️  Download Report",
-            data=f,
-            file_name=filename,
+            data=f, file_name=filename,
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             use_container_width=True,
         )
 
 def card_header(title, subtitle):
-    st.markdown(f"""
-    <div class="report-card-title">{title}</div>
-    <div class="report-card-sub">{subtitle}</div>
-    """, unsafe_allow_html=True)
+    st.markdown(f'<div class="report-card-title">{title}</div>'
+                f'<div class="report-card-sub">{subtitle}</div>',
+                unsafe_allow_html=True)
 
 def upload_label(text):
     st.markdown(f'<div class="upload-label">{text}</div>', unsafe_allow_html=True)
 
-# ── Tabs ──
-tab1, tab2, tab3, tab4, tab5 = st.tabs([
-    "💳  IPS Report",
-    "⬛  QR Report",
-    "🔄  P2P Success Rate",
-    "🏪  POS Report",
-    "✅  POS Success Rate",
-])
-
 # ══════════════════════════════
-# TAB 1 — IPS
+# IPS
 # ══════════════════════════════
-with tab1:
+if active == "IPS":
     st.markdown('<div class="report-card">', unsafe_allow_html=True)
     card_header("💳 IPS Successful Transaction Report",
                 "Source & destination breakdown by FI — sorted A to Z with totals")
@@ -465,9 +316,9 @@ with tab1:
     st.markdown('</div>', unsafe_allow_html=True)
 
 # ══════════════════════════════
-# TAB 2 — QR
+# QR
 # ══════════════════════════════
-with tab2:
+elif active == "QR":
     st.markdown('<div class="report-card">', unsafe_allow_html=True)
     card_header("⬛ QR Successful Transaction Report",
                 "EthioPay QR interoperable transactions — sorted A to Z with totals")
@@ -492,9 +343,9 @@ with tab2:
     st.markdown('</div>', unsafe_allow_html=True)
 
 # ══════════════════════════════
-# TAB 3 — P2P Success Rate
+# P2P
 # ══════════════════════════════
-with tab3:
+elif active == "P2P":
     st.markdown('<div class="report-card">', unsafe_allow_html=True)
     card_header("🔄 IPS-P2P Success Rate Report",
                 "Color-coded success rate per FI — Green ≥98.7% · Yellow 96–98.7% · Red ≤96%")
@@ -525,9 +376,9 @@ with tab3:
     st.markdown('</div>', unsafe_allow_html=True)
 
 # ══════════════════════════════
-# TAB 4 — POS Report
+# POS
 # ══════════════════════════════
-with tab4:
+elif active == "POS":
     st.markdown('<div class="report-card">', unsafe_allow_html=True)
     card_header("🏪 POS Successful With Value Report",
                 "Point of Sale — successful purchase transactions as Issuer & Acquirer")
@@ -542,7 +393,7 @@ with tab4:
     st.markdown("<br>", unsafe_allow_html=True)
     if st.button("Generate POS Report", use_container_width=True, key="btn_pos"):
         if not issuer_file or not acquirer_file:
-            st.error("Please upload both the Issuer report and the Acquirer report.")
+            st.error("Please upload both the Issuer and Acquirer reports.")
         else:
             with st.spinner("Generating report..."):
                 try:
@@ -558,9 +409,9 @@ with tab4:
     st.markdown('</div>', unsafe_allow_html=True)
 
 # ══════════════════════════════
-# TAB 5 — POS Success Rate
+# POS Success Rate
 # ══════════════════════════════
-with tab5:
+elif active == "POSR":
     st.markdown('<div class="report-card">', unsafe_allow_html=True)
     card_header("✅ POS Success Rate Report",
                 "POS transaction success rate analysis from SmartVista raw export")
@@ -589,43 +440,6 @@ with tab5:
                 except Exception as e:
                     st.error(f"Error: {e}")
     st.markdown('</div>', unsafe_allow_html=True)
-
-
-# ── JS fix for tab visibility ──
-st.markdown("""
-<script>
-function setImp(el, prop, val) {
-  el.style.setProperty(prop, val, 'important');
-}
-function fixTabs() {
-  const tabs = document.querySelectorAll('button[data-baseweb="tab"]');
-  tabs.forEach(tab => {
-    const selected = tab.getAttribute('aria-selected') === 'true';
-    setImp(tab, 'color', '#ffffff');
-    setImp(tab, 'font-weight', '700');
-    setImp(tab, 'opacity', '1');
-    setImp(tab, 'border', selected ? '1px solid #f27421' : '1px solid rgba(242,116,33,0.35)');
-    setImp(tab, 'border-radius', '7px');
-    setImp(tab, 'background', selected ? '#f27421' : 'rgba(242,116,33,0.1)');
-    tab.querySelectorAll('*').forEach(el => {
-      setImp(el, 'color', '#ffffff');
-      setImp(el, 'opacity', '1');
-    });
-  });
-}
-setTimeout(fixTabs, 300);
-setTimeout(fixTabs, 800);
-setTimeout(fixTabs, 1500);
-setTimeout(fixTabs, 3000);
-document.addEventListener('click', () => setTimeout(fixTabs, 200));
-document.addEventListener('mouseover', (e) => {
-  if (e.target.closest && e.target.closest('button[data-baseweb="tab"]')) {
-    fixTabs();
-  }
-});
-document.addEventListener('focusin', () => setTimeout(fixTabs, 50));
-</script>
-""", unsafe_allow_html=True)
 
 # ── Footer ──
 st.markdown("""
