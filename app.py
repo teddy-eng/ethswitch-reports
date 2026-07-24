@@ -27,14 +27,7 @@ def img_to_b64(path):
 ethswitch_b64 = img_to_b64("ethswitch_logo.png")
 ethiopay_b64  = img_to_b64("ethiopay_logo.png")
 
-# ── Tab state ──
-if "active_tab" not in st.session_state:
-    st.session_state.active_tab = "IPS"
 
-# ── Handle tab switching via query params ──
-params = st.query_params
-if "tab" in params:
-    st.session_state.active_tab = params["tab"]
 
 st.markdown(f"""
 <style>
@@ -85,42 +78,40 @@ st.markdown(f"""
   }}
   .hero-sub {{ font-size:0.85rem; color:rgba(255,255,255,0.45); margin-top:0.3rem; }}
 
-  /* ── Tab bar ── */
-  .tab-bar {{
-    display:flex; gap:6px;
-    background:#1a2240;
-    padding:6px; border-radius:10px;
-    border:1px solid rgba(242,116,33,0.2);
-    margin-bottom:1.2rem;
-    overflow-x:auto;
-    flex-wrap:nowrap;
-    width:100%;
-    box-sizing:border-box;
+  /* ── st.tabs styling ── */
+  .stTabs [data-baseweb="tab-list"] {{
+    background: #1a2240 !important;
+    gap: 4px !important;
+    padding: 6px !important;
+    border-radius: 10px !important;
+    border: 1px solid rgba(242,116,33,0.2) !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
   }}
-  .tab-btn {{
-    display:flex; align-items:center; gap:6px;
-    padding:8px 14px;
-    border-radius:7px;
-    font-size:0.82rem; font-weight:800;
-    cursor:pointer;
-    background:#0f142a;
-    color:#f27421 !important;
-    border:1.5px solid #f27421;
-    transition:all 0.2s;
-    white-space:nowrap;
-    flex-shrink:0;
-    text-decoration:none;
+  .stTabs [data-baseweb="tab"] {{
+    background: #0f142a !important;
+    border: 1.5px solid #f27421 !important;
+    border-radius: 7px !important;
+    color: #f27421 !important;
+    font-weight: 800 !important;
+    font-size: 0.82rem !important;
+    padding: 6px 14px !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
   }}
-  .tab-btn:hover {{
-    background:#f27421;
-    color:#ffffff !important;
+  .stTabs [data-baseweb="tab"] p {{
+    color: #f27421 !important;
+    font-weight: 800 !important;
   }}
-  .tab-btn.active {{
-    background:#f27421 !important;
-    color:#ffffff !important;
-    border:1.5px solid #f27421;
+  .stTabs [data-baseweb="tab"][aria-selected="true"] {{
+    background: #f27421 !important;
+    border-color: #f27421 !important;
   }}
-  .tab-btn i {{ font-size:0.9rem; }}
+  .stTabs [data-baseweb="tab"][aria-selected="true"] p {{
+    color: #ffffff !important;
+  }}
+  .stTabs [data-baseweb="tab-highlight"] {{ display: none !important; }}
+  .stTabs [data-baseweb="tab-border"] {{ display: none !important; }}
 
   .report-card {{
     background:#1a2240;
@@ -226,24 +217,13 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# ── Tab definitions with Font Awesome icons ──
-TABS = [
-    ("IPS",  "fa-solid fa-money-bill-transfer",  "IPS Report"),
-    ("QR",   "fa-solid fa-qrcode",               "QR Report"),
-    ("P2P",  "fa-solid fa-arrow-right-arrow-left","P2P Success Rate"),
-    ("POS",  "fa-solid fa-credit-card",           "POS Report"),
-    ("POSR", "fa-solid fa-chart-line",            "POS Success Rate"),
-]
-
-active = st.session_state.active_tab
-
-# ── Render tab bar with anchor links ──
-tab_html = '<div class="tab-bar">'
-for key, icon, label in TABS:
-    cls = "tab-btn active" if active == key else "tab-btn"
-    tab_html += f'<a class="{cls}" href="?tab={key}" target="_self"><i class="{icon}"></i>{label}</a>'
-tab_html += "</div>"
-st.markdown(tab_html, unsafe_allow_html=True)
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    "  IPS Report  ",
+    "  QR Report  ",
+    "  P2P Success Rate  ",
+    "  POS Report  ",
+    "  POS Success Rate  ",
+])
 
 # ── Helpers ──
 def save_upload(uploaded_file):
@@ -273,7 +253,7 @@ def upload_label(text):
 # ══════════════════════════════
 # IPS
 # ══════════════════════════════
-if active == "IPS":
+with tab1:
     st.markdown('<div class="report-card">', unsafe_allow_html=True)
     card_header('<i class="fa-solid fa-money-bill-transfer"></i> IPS Successful Transaction Report',
                 "Source & destination breakdown by FI — sorted A to Z with totals")
@@ -300,7 +280,7 @@ if active == "IPS":
 # ══════════════════════════════
 # QR
 # ══════════════════════════════
-elif active == "QR":
+with tab2:
     st.markdown('<div class="report-card">', unsafe_allow_html=True)
     card_header('<i class="fa-solid fa-qrcode"></i> QR Successful Transaction Report',
                 "EthioPay QR interoperable transactions — sorted A to Z with totals")
@@ -327,7 +307,7 @@ elif active == "QR":
 # ══════════════════════════════
 # P2P
 # ══════════════════════════════
-elif active == "P2P":
+with tab3:
     st.markdown('<div class="report-card">', unsafe_allow_html=True)
     card_header('<i class="fa-solid fa-arrow-right-arrow-left"></i> IPS-P2P Success Rate Report',
                 "Color-coded success rate per FI — Green ≥98.7% · Yellow 96–98.7% · Red ≤96%")
@@ -360,7 +340,7 @@ elif active == "P2P":
 # ══════════════════════════════
 # POS
 # ══════════════════════════════
-elif active == "POS":
+with tab4:
     st.markdown('<div class="report-card">', unsafe_allow_html=True)
     card_header('<i class="fa-solid fa-credit-card"></i> POS Successful With Value Report',
                 "Point of Sale — successful purchase transactions as Issuer & Acquirer")
@@ -393,7 +373,7 @@ elif active == "POS":
 # ══════════════════════════════
 # POS Success Rate
 # ══════════════════════════════
-elif active == "POSR":
+with tab5:
     st.markdown('<div class="report-card">', unsafe_allow_html=True)
     card_header('<i class="fa-solid fa-chart-line"></i> POS Success Rate Report',
                 "POS transaction success rate analysis from SmartVista raw export")
