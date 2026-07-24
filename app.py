@@ -236,6 +236,47 @@ st.markdown(f"""
   }}
   .footer span {{ color: #f27421; font-weight: 600; }}
 
+
+  /* ── Force brand colors everywhere — override light theme ── */
+  [data-testid="stAppViewContainer"],
+  [data-testid="stAppViewBlockContainer"],
+  [data-testid="stVerticalBlock"],
+  [data-testid="stMain"],
+  .main, .block-container {{
+    background-color: #0f142a !important;
+    color: #ffffff !important;
+  }}
+  /* Upload zone background */
+  [data-testid="stFileUploader"] section,
+  [data-testid="stFileUploadDropzone"] {{
+    background-color: #0f142a !important;
+    border-color: rgba(242,116,33,0.4) !important;
+  }}
+  [data-testid="stFileUploader"] span,
+  [data-testid="stFileUploader"] p,
+  [data-testid="stFileUploader"] small {{
+    color: rgba(255,255,255,0.6) !important;
+  }}
+  /* Spinner */
+  [data-testid="stSpinner"] {{
+    background: #0f142a !important;
+  }}
+  /* Any stray white divs */
+  div[class*="st-"] {{
+    background-color: transparent;
+  }}
+  /* Success/error boxes */
+  [data-testid="stAlert"][kind="success"] {{
+    background: rgba(0,176,80,0.15) !important;
+    border: 1px solid rgba(0,176,80,0.4) !important;
+    color: #ffffff !important;
+  }}
+  [data-testid="stAlert"][kind="error"] {{
+    background: rgba(255,0,0,0.15) !important;
+    border: 1px solid rgba(255,0,0,0.3) !important;
+    color: #ffffff !important;
+  }}
+
   /* ── Hide Streamlit chrome ── */
   #MainMenu, footer, header {{ visibility: hidden; }}
   .block-container {{ padding-top: 0 !important; max-width: 900px; }}
