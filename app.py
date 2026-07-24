@@ -220,10 +220,10 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
-    "  IPS Report  ",
+    "  IPS-P2P Report  ",
     "  QR Report  ",
     "  P2P Success Rate  ",
-    "  POS Report  ",
+    "  POS With Value Report  ",
     "  POS Success Rate  ",
 ])
 
@@ -257,7 +257,7 @@ def upload_label(text):
 # ══════════════════════════════
 with tab1:
     st.markdown('<div class="report-card">', unsafe_allow_html=True)
-    card_header('<i class="fa-solid fa-money-bill-transfer"></i> IPS Successful Transaction Report',
+    card_header('<i class="fa-solid fa-money-bill-transfer"></i> IPS-P2P Successful Transaction Report',
                 "Source & destination breakdown by FI — sorted A to Z with totals")
     report_date = st.date_input("Report Date", value=date.today(), key="ips_date")
     upload_label("IPS Success File")
@@ -316,10 +316,10 @@ with tab3:
     report_date_p2p = st.date_input("Report Date", value=date.today(), key="p2p_date")
     col1, col2 = st.columns(2)
     with col1:
-        upload_label("Decline / Error Report")
+        upload_label("Decline / Error File")
         error_file = st.file_uploader("Decline", type=["xlsx"], key="p2p_error", label_visibility="collapsed")
     with col2:
-        upload_label("IPS Success Report")
+        upload_label("IPS Success File")
         success_file_p2p = st.file_uploader("Success", type=["xlsx"], key="p2p_success", label_visibility="collapsed")
     st.markdown("<br>", unsafe_allow_html=True)
     if st.button("Generate P2P Report", use_container_width=True, key="btn_p2p"):
@@ -344,15 +344,15 @@ with tab3:
 # ══════════════════════════════
 with tab4:
     st.markdown('<div class="report-card">', unsafe_allow_html=True)
-    card_header('<i class="fa-solid fa-credit-card"></i> POS Successful With Value Report',
+    card_header('<i class="fa-solid fa-credit-card"></i> POS With Value Report',
                 "Point of Sale — successful purchase transactions as Issuer & Acquirer")
     report_date_pos = st.date_input("Report Date", value=date.today(), key="pos_date")
     col3, col4 = st.columns(2)
     with col3:
-        upload_label("Issuer Report")
+        upload_label("Issuer File")
         issuer_file = st.file_uploader("Issuer", type=["xlsx"], key="pos_issuer", label_visibility="collapsed")
     with col4:
-        upload_label("Acquirer Report")
+        upload_label("Acquirer File")
         acquirer_file = st.file_uploader("Acquirer", type=["xlsx"], key="pos_acquirer", label_visibility="collapsed")
     st.markdown("<br>", unsafe_allow_html=True)
     if st.button("Generate POS Report", use_container_width=True, key="btn_pos"):
@@ -380,7 +380,7 @@ with tab5:
     card_header('<i class="fa-solid fa-chart-line"></i> POS Success Rate Report',
                 "POS transaction success rate analysis from SmartVista raw export")
     report_date_posr = st.date_input("Report Date", value=date.today(), key="posr_date")
-    upload_label("SmartVista POS Raw Transaction Export")
+    upload_label("POS Detail File")
     posr_file = st.file_uploader("POS raw", type=["xlsx"], key="posr_file", label_visibility="collapsed")
     st.markdown("<br>", unsafe_allow_html=True)
     if st.button("Generate POS Success Rate Report", use_container_width=True, key="btn_posr"):
