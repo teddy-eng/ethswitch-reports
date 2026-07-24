@@ -116,18 +116,26 @@ def generate_qr_report(input_path, output_path, report_date):
 
     ws.merge_cells("E2:I2"); ws["E2"] = "EthSwitch S.C."
     ws["E2"].font = Font(bold=True, size=12); ws["E2"].alignment = Alignment(horizontal="center")
+    for col in ["E", "F", "G", "H", "I"]:
+        ws[f"{col}2"].border = thin_border()
 
     ws.merge_cells("E3:I3"); ws["E3"] = "QR Report"
     ws["E3"].font = Font(bold=True, size=12); ws["E3"].alignment = Alignment(horizontal="center")
+    for col in ["E", "F", "G", "H", "I"]:
+        ws[f"{col}3"].border = thin_border()
 
     ws.merge_cells("E4:I4"); ws["E4"] = report_date
-    ws["E4"].number_format = "MM/DD/YYYY"
+    ws["E4"].number_format = "d-mmm-yyyy"
     ws["E4"].font = Font(bold=True, size=12); ws["E4"].alignment = Alignment(horizontal="center")
+    for col in ["E", "F", "G", "H", "I"]:
+        ws[f"{col}4"].border = thin_border()
 
     ws.merge_cells("E5:I5")
     ws["E5"] = f"Successful QR Interoperable Transactions for {date_str}"
     ws["E5"].font = Font(bold=True, size=11, color=BLACK)
     ws["E5"].fill = make_fill(WHITE); ws["E5"].alignment = Alignment(horizontal="center")
+    for col in ["E", "F", "G", "H", "I"]:
+        ws[f"{col}5"].border = thin_border()
 
     ws.merge_cells("E6:E7"); ws["E6"] = "Bank"
     ws.merge_cells("F6:G6"); ws["F6"] = "As a Destination"
