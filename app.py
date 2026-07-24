@@ -39,7 +39,7 @@ st.markdown(f"""
   /* ── Navbar ── */
   .navbar {{
     background: #0f142a;
-    padding: 0.75rem 2rem;
+    padding: 1rem 2rem;
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
@@ -52,7 +52,7 @@ st.markdown(f"""
     justify-content: flex-start;
   }}
   .navbar-left img {{
-    height: 44px;
+    height: 60px;
     object-fit: contain;
   }}
   .navbar-center {{
@@ -61,61 +61,44 @@ st.markdown(f"""
     align-items: center;
     justify-content: center;
   }}
-  .navbar-app-label {{
-    font-size: 0.6rem;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: #f27421;
-    margin-bottom: 1px;
-  }}
   .navbar-app-name {{
     font-family: 'Syne', sans-serif;
-    font-size: 1.2rem;
+    font-size: 1.6rem;
     font-weight: 800;
-    color: #ffffff;
+    color: #f27421;
     letter-spacing: 0.01em;
     white-space: nowrap;
   }}
-  .navbar-app-name span {{ color: #f27421; }}
   .navbar-right {{
     display: flex;
     align-items: center;
     justify-content: flex-end;
   }}
   .navbar-right img {{
-    height: 44px;
+    height: 60px;
     object-fit: contain;
   }}
 
   /* ── Hero ── */
   .hero {{
     background: linear-gradient(135deg, #0f142a 0%, #1a2240 60%, #0f142a 100%);
-    padding: 1.8rem 2.5rem 1.5rem;
+    padding: 1.5rem 2.5rem;
     margin: 0 -1rem 1.5rem -1rem;
-    position: relative;
-    overflow: hidden;
     border-bottom: 1px solid rgba(242,116,33,0.2);
-  }}
-  .hero::before {{
-    content: '';
-    position: absolute;
-    top: -40px; right: -40px;
-    width: 200px; height: 200px;
-    background: radial-gradient(circle, rgba(242,116,33,0.15) 0%, transparent 70%);
-    border-radius: 50%;
+    text-align: center;
   }}
   .hero-title {{
     font-family: 'Syne', sans-serif;
-    font-size: 1.7rem;
+    font-size: 1.5rem;
     font-weight: 800;
-    color: #ffffff;
-    line-height: 1.15;
-    margin-bottom: 0.4rem;
+    color: #f27421;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
   }}
   .hero-sub {{
-    font-size: 0.88rem;
-    color: rgba(255,255,255,0.55);
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.45);
+    margin-top: 0.3rem;
   }}
 
   /* ── Tabs ── */
@@ -127,17 +110,17 @@ st.markdown(f"""
     gap: 2px;
   }}
   .stTabs [data-baseweb="tab"] {{
-    font-size: 0.83rem;
-    font-weight: 500;
-    color: rgba(255,255,255,0.5);
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #f27421 !important;
     border-radius: 7px;
-    padding: 0.45rem 1rem;
+    padding: 0.5rem 1rem;
     border: none !important;
   }}
   .stTabs [aria-selected="true"] {{
     background: #f27421 !important;
     color: #ffffff !important;
-    font-weight: 600;
+    font-weight: 700;
   }}
   .stTabs [data-baseweb="tab-highlight"] {{ display: none; }}
 
@@ -151,9 +134,9 @@ st.markdown(f"""
   }}
   .report-card-title {{
     font-family: 'Syne', sans-serif;
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: #ffffff;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #f27421;
     margin-bottom: 0.2rem;
     display: flex;
     align-items: center;
@@ -166,22 +149,33 @@ st.markdown(f"""
     border-left: 3px solid #f27421;
     padding-left: 0.6rem;
   }}
-  .accent-dot {{
-    width: 8px; height: 8px;
-    background: #f27421;
-    border-radius: 50%;
-    display: inline-block;
-    flex-shrink: 0;
-  }}
 
   /* ── Upload label ── */
   .upload-label {{
-    font-size: 0.8rem;
-    font-weight: 600;
+    font-size: 0.82rem;
+    font-weight: 700;
     color: #f27421;
     text-transform: uppercase;
     letter-spacing: 0.07em;
     margin-bottom: 4px;
+  }}
+
+  /* ── Date label override ── */
+  [data-testid="stDateInput"] label,
+  .stDateInput label {{
+    color: #f27421 !important;
+    font-weight: 700 !important;
+    font-size: 0.85rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.07em !important;
+  }}
+
+  /* ── Date input ── */
+  [data-testid="stDateInput"] input {{
+    background: #0f142a !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(242,116,33,0.3) !important;
+    border-radius: 8px !important;
   }}
 
   /* ── File uploader ── */
@@ -195,18 +189,6 @@ st.markdown(f"""
     border-color: #f27421;
   }}
   [data-testid="stFileUploader"] label {{
-    color: rgba(255,255,255,0.7) !important;
-    font-size: 0.83rem !important;
-  }}
-
-  /* ── Date input ── */
-  [data-testid="stDateInput"] input {{
-    background: #0f142a !important;
-    color: #ffffff !important;
-    border: 1px solid rgba(242,116,33,0.3) !important;
-    border-radius: 8px !important;
-  }}
-  [data-testid="stDateInput"] label {{
     color: rgba(255,255,255,0.6) !important;
     font-size: 0.83rem !important;
   }}
@@ -218,8 +200,8 @@ st.markdown(f"""
     border: none !important;
     border-radius: 9px !important;
     padding: 0.6rem 1.5rem !important;
-    font-weight: 600 !important;
-    font-size: 0.88rem !important;
+    font-weight: 700 !important;
+    font-size: 0.9rem !important;
     letter-spacing: 0.02em !important;
     transition: background 0.2s, transform 0.1s !important;
     box-shadow: 0 2px 12px rgba(242,116,33,0.3) !important;
@@ -235,18 +217,24 @@ st.markdown(f"""
     color: #ffffff !important;
     border: 1.5px solid #f27421 !important;
     border-radius: 9px !important;
-    font-weight: 600 !important;
-    font-size: 0.88rem !important;
+    font-weight: 700 !important;
   }}
   [data-testid="stDownloadButton"] > button:hover {{
     background: #f27421 !important;
   }}
 
-  /* ── Alerts ── */
-  [data-testid="stAlert"] {{
-    border-radius: 9px !important;
-    font-size: 0.85rem !important;
+  /* ── Footer ── */
+  .footer {{
+    background: #0f142a;
+    border-top: 2px solid #f27421;
+    text-align: center;
+    padding: 1rem;
+    margin: 2rem -1rem -1rem -1rem;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 0.04em;
   }}
+  .footer span {{ color: #f27421; font-weight: 600; }}
 
   /* ── Hide Streamlit chrome ── */
   #MainMenu, footer, header {{ visibility: hidden; }}
@@ -259,8 +247,7 @@ st.markdown(f"""
     {"<img src='data:image/png;base64," + ethswitch_b64 + "' />" if ethswitch_b64 else ""}
   </div>
   <div class="navbar-center">
-    <div class="navbar-app-label">Daily Report Generator</div>
-    <div class="navbar-app-name">CRM <span>Report Hub</span></div>
+    <div class="navbar-app-name">CRM Report Hub</div>
   </div>
   <div class="navbar-right">
     {"<img src='data:image/png;base64," + ethiopay_b64 + "' />" if ethiopay_b64 else ""}
@@ -269,7 +256,7 @@ st.markdown(f"""
 
 <!-- Hero -->
 <div class="hero">
-  <div class="hero-title">EthSwitch S.C. — Client Relationship Management</div>
+  <div class="hero-title">Daily Report Generator</div>
   <div class="hero-sub">Upload your raw SmartVista data and download formatted Reports</div>
 </div>
 """, unsafe_allow_html=True)
@@ -292,9 +279,9 @@ def download_button(output_path, filename):
             use_container_width=True,
         )
 
-def card_header(icon, title, subtitle):
+def card_header(title, subtitle):
     st.markdown(f"""
-    <div class="report-card-title"><span class="accent-dot"></span>{icon} {title}</div>
+    <div class="report-card-title">{title}</div>
     <div class="report-card-sub">{subtitle}</div>
     """, unsafe_allow_html=True)
 
@@ -303,10 +290,10 @@ def upload_label(text):
 
 # ── Tabs ──
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
-    "📊  IPS Report",
-    "📷  QR Report",
-    "📈  P2P Success Rate",
-    "🖥️  POS Report",
+    "💳  IPS Report",
+    "⬛  QR Report",
+    "🔄  P2P Success Rate",
+    "🏪  POS Report",
     "✅  POS Success Rate",
 ])
 
@@ -315,9 +302,9 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs([
 # ══════════════════════════════
 with tab1:
     st.markdown('<div class="report-card">', unsafe_allow_html=True)
-    card_header("📊", "IPS Successful Transaction Report",
+    card_header("💳 IPS Successful Transaction Report",
                 "Source & destination breakdown by FI — sorted A to Z with totals")
-    report_date = st.date_input("Report date", value=date.today(), key="ips_date")
+    report_date = st.date_input("Report Date", value=date.today(), key="ips_date")
     upload_label("IPS Success File")
     ips_file = st.file_uploader("IPS success file (.xlsx)", type=["xlsx"], key="ips_file", label_visibility="collapsed")
     st.markdown("<br>", unsafe_allow_html=True)
@@ -342,9 +329,9 @@ with tab1:
 # ══════════════════════════════
 with tab2:
     st.markdown('<div class="report-card">', unsafe_allow_html=True)
-    card_header("📷", "QR Successful Transaction Report",
+    card_header("⬛ QR Successful Transaction Report",
                 "EthioPay QR interoperable transactions — sorted A to Z with totals")
-    report_date_qr = st.date_input("Report date", value=date.today(), key="qr_date")
+    report_date_qr = st.date_input("Report Date", value=date.today(), key="qr_date")
     upload_label("QR Success File")
     qr_file = st.file_uploader("QR success file (.xlsx)", type=["xlsx"], key="qr_file", label_visibility="collapsed")
     st.markdown("<br>", unsafe_allow_html=True)
@@ -369,16 +356,16 @@ with tab2:
 # ══════════════════════════════
 with tab3:
     st.markdown('<div class="report-card">', unsafe_allow_html=True)
-    card_header("📈", "IPS-P2P Success Rate Report",
+    card_header("🔄 IPS-P2P Success Rate Report",
                 "Color-coded success rate per FI — Green ≥98.7% · Yellow 96–98.7% · Red ≤96%")
-    report_date_p2p = st.date_input("Report date", value=date.today(), key="p2p_date")
+    report_date_p2p = st.date_input("Report Date", value=date.today(), key="p2p_date")
     col1, col2 = st.columns(2)
     with col1:
         upload_label("Decline / Error Report")
-        error_file = st.file_uploader("Decline / Error file (.xlsx)", type=["xlsx"], key="p2p_error", label_visibility="collapsed")
+        error_file = st.file_uploader("Decline file", type=["xlsx"], key="p2p_error", label_visibility="collapsed")
     with col2:
         upload_label("IPS Success Report")
-        success_file_p2p = st.file_uploader("IPS Success file (.xlsx)", type=["xlsx"], key="p2p_success", label_visibility="collapsed")
+        success_file_p2p = st.file_uploader("Success file", type=["xlsx"], key="p2p_success", label_visibility="collapsed")
     st.markdown("<br>", unsafe_allow_html=True)
     if st.button("Generate P2P Report", use_container_width=True, key="btn_p2p"):
         if not error_file or not success_file_p2p:
@@ -402,16 +389,16 @@ with tab3:
 # ══════════════════════════════
 with tab4:
     st.markdown('<div class="report-card">', unsafe_allow_html=True)
-    card_header("🖥️", "POS Successful With Value Report",
+    card_header("🏪 POS Successful With Value Report",
                 "Point of Sale — successful purchase transactions as Issuer & Acquirer")
-    report_date_pos = st.date_input("Report date", value=date.today(), key="pos_date")
+    report_date_pos = st.date_input("Report Date", value=date.today(), key="pos_date")
     col3, col4 = st.columns(2)
     with col3:
         upload_label("Issuer Report")
-        issuer_file = st.file_uploader("Issuer file (.xlsx)", type=["xlsx"], key="pos_issuer", label_visibility="collapsed")
+        issuer_file = st.file_uploader("Issuer file", type=["xlsx"], key="pos_issuer", label_visibility="collapsed")
     with col4:
         upload_label("Acquirer Report")
-        acquirer_file = st.file_uploader("Acquirer file (.xlsx)", type=["xlsx"], key="pos_acquirer", label_visibility="collapsed")
+        acquirer_file = st.file_uploader("Acquirer file", type=["xlsx"], key="pos_acquirer", label_visibility="collapsed")
     st.markdown("<br>", unsafe_allow_html=True)
     if st.button("Generate POS Report", use_container_width=True, key="btn_pos"):
         if not issuer_file or not acquirer_file:
@@ -435,11 +422,11 @@ with tab4:
 # ══════════════════════════════
 with tab5:
     st.markdown('<div class="report-card">', unsafe_allow_html=True)
-    card_header("✅", "POS Success Rate Report",
+    card_header("✅ POS Success Rate Report",
                 "POS transaction success rate analysis from SmartVista raw export")
-    report_date_posr = st.date_input("Report date", value=date.today(), key="posr_date")
+    report_date_posr = st.date_input("Report Date", value=date.today(), key="posr_date")
     upload_label("SmartVista POS Raw Transaction Export")
-    posr_file = st.file_uploader("POS raw export (.xlsx)", type=["xlsx"], key="posr_file", label_visibility="collapsed")
+    posr_file = st.file_uploader("POS raw export", type=["xlsx"], key="posr_file", label_visibility="collapsed")
     st.markdown("<br>", unsafe_allow_html=True)
     if st.button("Generate POS Success Rate Report", use_container_width=True, key="btn_posr"):
         if not posr_file:
@@ -462,3 +449,10 @@ with tab5:
                 except Exception as e:
                     st.error(f"Error: {e}")
     st.markdown('</div>', unsafe_allow_html=True)
+
+# ── Footer ──
+st.markdown("""
+<div class="footer">
+  <span>EthSwitch S.C.</span> &nbsp;|&nbsp; Powered By: <span>CRM Department</span> &nbsp;|&nbsp; © 2026
+</div>
+""", unsafe_allow_html=True)
