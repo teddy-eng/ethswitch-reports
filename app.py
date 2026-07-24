@@ -112,15 +112,17 @@ st.markdown(f"""
   .stTabs [data-baseweb="tab"] {{
     font-size: 0.88rem;
     font-weight: 700;
-    color: #f27421 !important;
+    color: #ffffff !important;
     border-radius: 7px;
     padding: 0.5rem 1rem;
-    border: none !important;
+    border: 1px solid rgba(242,116,33,0.3) !important;
+    background: rgba(242,116,33,0.08) !important;
   }}
   .stTabs [aria-selected="true"] {{
     background: #f27421 !important;
     color: #ffffff !important;
     font-weight: 700;
+    border: 1px solid #f27421 !important;
   }}
   .stTabs [data-baseweb="tab-highlight"] {{ display: none; }}
 
