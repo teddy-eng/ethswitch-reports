@@ -94,14 +94,15 @@ st.markdown(f"""
     border-radius: 7px !important;
     color: #00b050 !important;
     font-weight: 800 !important;
-    font-size: 0.82rem !important;
-    padding: 6px 14px !important;
+    font-size: 1.05rem !important;
+    padding: 8px 18px !important;
     white-space: nowrap !important;
     flex-shrink: 0 !important;
   }}
   .stTabs [data-baseweb="tab"] p {{
     color: #00b050 !important;
     font-weight: 800 !important;
+    font-size: 1.05rem !important;
   }}
   .stTabs [data-baseweb="tab"][aria-selected="true"] {{
     background: #f27421 !important;
