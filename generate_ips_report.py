@@ -123,18 +123,26 @@ def generate_report(input_path, output_path, report_date):
 
     ws.merge_cells("B1:F1"); ws["B1"] = "EthSwitch S.C."
     ws["B1"].font = Font(bold=True, size=12); ws["B1"].alignment = Alignment(horizontal="center")
+    for col in ["B", "C", "D", "E", "F"]:
+        ws[f"{col}1"].border = thin_border()
 
     ws.merge_cells("B2:F2"); ws["B2"] = "IPS Successful Report"
     ws["B2"].font = Font(bold=True, size=12); ws["B2"].alignment = Alignment(horizontal="center")
+    for col in ["B", "C", "D", "E", "F"]:
+        ws[f"{col}2"].border = thin_border()
 
     ws.merge_cells("B3:F3"); ws["B3"] = report_date
-    ws["B3"].number_format = "MM/DD/YYYY"
+    ws["B3"].number_format = "d-mmm-yyyy"
     ws["B3"].font = Font(bold=True, size=12); ws["B3"].alignment = Alignment(horizontal="center")
+    for col in ["B", "C", "D", "E", "F"]:
+        ws[f"{col}3"].border = thin_border()
 
     ws.merge_cells("B4:F4")
     ws["B4"] = f"Successful IPS Interoperable Transactions Held on {date_str}"
     ws["B4"].font = Font(bold=True, size=11, color=BLACK)
     ws["B4"].fill = make_fill(WHITE); ws["B4"].alignment = Alignment(horizontal="center")
+    for col in ["B", "C", "D", "E", "F"]:
+        ws[f"{col}4"].border = thin_border()
 
     ws.merge_cells("B5:B6"); ws["B5"] = "BANK"
     ws.merge_cells("C5:D5"); ws["C5"] = "Successful  Transactions As Destination"
