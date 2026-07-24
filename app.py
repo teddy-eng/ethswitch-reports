@@ -179,8 +179,12 @@ st.markdown(f"""
     background:#f27421 !important; color:#ffffff !important;
     border:none !important; border-radius:9px !important;
     padding:0.6rem 1.5rem !important; font-weight:700 !important;
-    font-size:0.9rem !important;
+    font-size:1.15rem !important;
     box-shadow:0 2px 12px rgba(242,116,33,0.3) !important;
+  }}
+  .stButton > button p {{
+    font-size:1.15rem !important;
+    font-weight:700 !important;
   }}
   .stButton > button:hover {{
     background:#d9661a !important; transform:translateY(-1px) !important;
