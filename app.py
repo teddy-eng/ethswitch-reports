@@ -27,9 +27,19 @@ def img_to_b64(path):
 ethswitch_b64 = img_to_b64("ethswitch_logo.png")
 ethiopay_b64  = img_to_b64("ethiopay_logo.png")
 
+# ── Tab state ──
+if "active_tab" not in st.session_state:
+    st.session_state.active_tab = "IPS"
+
+# ── Handle tab switching via query params ──
+params = st.query_params
+if "tab" in params:
+    st.session_state.active_tab = params["tab"]
+
 st.markdown(f"""
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap');
+  @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css');
 
   html, body, [class*="css"],
   [data-testid="stAppViewContainer"],
@@ -40,7 +50,6 @@ st.markdown(f"""
     color: #ffffff !important;
   }}
 
-  /* ── Navbar ── */
   .navbar {{
     background: #0f142a;
     padding: 1rem 2rem;
@@ -61,7 +70,6 @@ st.markdown(f"""
   .navbar-right {{ display:flex; align-items:center; justify-content:flex-end; }}
   .navbar-right img {{ height:60px; object-fit:contain; }}
 
-  /* ── Hero ── */
   .hero {{
     background:linear-gradient(135deg,#0f142a 0%,#1a2240 60%,#0f142a 100%);
     padding:1.5rem 2.5rem;
@@ -77,37 +85,43 @@ st.markdown(f"""
   }}
   .hero-sub {{ font-size:0.85rem; color:rgba(255,255,255,0.45); margin-top:0.3rem; }}
 
-  /* ── Custom Tabs ── */
-  .custom-tabs {{
-    display:flex; gap:6px; flex-wrap:wrap;
+  /* ── Tab bar ── */
+  .tab-bar {{
+    display:flex; gap:6px;
     background:#1a2240;
     padding:6px; border-radius:10px;
     border:1px solid rgba(242,116,33,0.2);
-    margin-bottom:1rem;
+    margin-bottom:1.2rem;
+    overflow-x:auto;
+    flex-wrap:nowrap;
+    width:100%;
+    box-sizing:border-box;
   }}
-  .custom-tab {{
-    padding:8px 16px;
+  .tab-btn {{
+    display:flex; align-items:center; gap:6px;
+    padding:8px 14px;
     border-radius:7px;
-    font-size:0.88rem; font-weight:800;
+    font-size:0.82rem; font-weight:800;
     cursor:pointer;
     background:#0f142a;
     color:#f27421 !important;
     border:1.5px solid #f27421;
     transition:all 0.2s;
     white-space:nowrap;
-    letter-spacing:0.02em;
+    flex-shrink:0;
+    text-decoration:none;
   }}
-  .custom-tab:hover {{
+  .tab-btn:hover {{
     background:#f27421;
     color:#ffffff !important;
   }}
-  .custom-tab.active {{
+  .tab-btn.active {{
     background:#f27421 !important;
     color:#ffffff !important;
     border:1.5px solid #f27421;
   }}
+  .tab-btn i {{ font-size:0.9rem; }}
 
-  /* ── Report cards ── */
   .report-card {{
     background:#1a2240;
     border:1px solid rgba(242,116,33,0.2);
@@ -125,15 +139,11 @@ st.markdown(f"""
     margin-bottom:1.4rem;
     border-left:3px solid #f27421; padding-left:0.6rem;
   }}
-
-  /* ── Upload label ── */
   .upload-label {{
     font-size:0.82rem; font-weight:700;
     color:#f27421; text-transform:uppercase;
     letter-spacing:0.07em; margin-bottom:4px;
   }}
-
-  /* ── Date label ── */
   [data-testid="stDateInput"] label {{
     color:#f27421 !important; font-weight:700 !important;
     font-size:0.85rem !important; text-transform:uppercase !important;
@@ -144,8 +154,6 @@ st.markdown(f"""
     border:1px solid rgba(242,116,33,0.3) !important;
     border-radius:8px !important;
   }}
-
-  /* ── File uploader — force green Upload button ── */
   [data-testid="stFileUploader"] {{
     background:#0f142a !important;
     border:1.5px dashed rgba(242,116,33,0.4) !important;
@@ -154,8 +162,6 @@ st.markdown(f"""
   [data-testid="stFileUploaderDropzone"] {{
     background:#0f142a !important;
   }}
-  [data-testid="stFileUploader"] button,
-  [data-testid="stFileUploaderDropzoneInstructions"] button,
   [data-testid="stBaseButton-secondary"] {{
     background:#00b050 !important;
     color:#ffffff !important;
@@ -168,8 +174,6 @@ st.markdown(f"""
   [data-testid="stFileUploader"] small {{
     color:rgba(255,255,255,0.7) !important;
   }}
-
-  /* ── Main buttons ── */
   .stButton > button {{
     background:#f27421 !important; color:#ffffff !important;
     border:none !important; border-radius:9px !important;
@@ -180,8 +184,6 @@ st.markdown(f"""
   .stButton > button:hover {{
     background:#d9661a !important; transform:translateY(-1px) !important;
   }}
-
-  /* ── Download button ── */
   [data-testid="stDownloadButton"] > button {{
     background:#0f142a !important; color:#ffffff !important;
     border:1.5px solid #f27421 !important; border-radius:9px !important;
@@ -190,8 +192,6 @@ st.markdown(f"""
   [data-testid="stDownloadButton"] > button:hover {{
     background:#f27421 !important;
   }}
-
-  /* ── Footer ── */
   .footer {{
     background:#0f142a; border-top:2px solid #f27421;
     text-align:center; padding:1rem;
@@ -200,10 +200,11 @@ st.markdown(f"""
     letter-spacing:0.04em;
   }}
   .footer span {{ color:#f27421; font-weight:600; }}
-
   #MainMenu, footer, header {{ visibility:hidden; }}
-  .block-container {{ padding-top:0 !important; max-width:900px; }}
+  .block-container {{ padding-top:0 !important; max-width:960px; }}
 </style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
 <!-- Navbar -->
 <div class="navbar">
@@ -225,43 +226,24 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# ── Custom tab state ──
-if "active_tab" not in st.session_state:
-    st.session_state.active_tab = "IPS"
-
-tabs_def = [
-    ("IPS",  "💳  IPS Report"),
-    ("QR",   "⬛  QR Report"),
-    ("P2P",  "🔄  P2P Success Rate"),
-    ("POS",  "🏪  POS Report"),
-    ("POSR", "✅  POS Success Rate"),
+# ── Tab definitions with Font Awesome icons ──
+TABS = [
+    ("IPS",  "fa-solid fa-money-bill-transfer",  "IPS Report"),
+    ("QR",   "fa-solid fa-qrcode",               "QR Report"),
+    ("P2P",  "fa-solid fa-arrow-right-arrow-left","P2P Success Rate"),
+    ("POS",  "fa-solid fa-credit-card",           "POS Report"),
+    ("POSR", "fa-solid fa-chart-line",            "POS Success Rate"),
 ]
 
-# ── Render custom tab bar ──
-tab_html = '<div class="custom-tabs">'
-for key, label in tabs_def:
-    active_class = "active" if st.session_state.active_tab == key else ""
-    tab_html += f'<div class="custom-tab {active_class}" onclick="selectTab(\'{key}\')">{label}</div>'
+active = st.session_state.active_tab
+
+# ── Render tab bar with anchor links ──
+tab_html = '<div class="tab-bar">'
+for key, icon, label in TABS:
+    cls = "tab-btn active" if active == key else "tab-btn"
+    tab_html += f'<a class="{cls}" href="?tab={key}" target="_self"><i class="{icon}"></i>{label}</a>'
 tab_html += "</div>"
-
-tab_html += """
-<script>
-function selectTab(key) {
-  // Use Streamlit's setComponentValue via query param trick
-  const url = new URL(window.location);
-  url.searchParams.set('tab', key);
-  window.history.replaceState({}, '', url);
-  // Find and click the hidden radio
-  const radios = window.parent.document.querySelectorAll('input[type=radio]');
-  radios.forEach(r => { if(r.value === key) r.click(); });
-}
-</script>
-"""
 st.markdown(tab_html, unsafe_allow_html=True)
-
-# ── Use radio for actual tab switching (hidden) ──
-st.markdown("<style>div[data-testid='stRadio']{display:none}</style>", unsafe_allow_html=True)
-active = st.radio("tab", [k for k, _ in tabs_def], key="active_tab", label_visibility="collapsed")
 
 # ── Helpers ──
 def save_upload(uploaded_file):
@@ -293,11 +275,11 @@ def upload_label(text):
 # ══════════════════════════════
 if active == "IPS":
     st.markdown('<div class="report-card">', unsafe_allow_html=True)
-    card_header("💳 IPS Successful Transaction Report",
+    card_header('<i class="fa-solid fa-money-bill-transfer"></i> IPS Successful Transaction Report',
                 "Source & destination breakdown by FI — sorted A to Z with totals")
     report_date = st.date_input("Report Date", value=date.today(), key="ips_date")
     upload_label("IPS Success File")
-    ips_file = st.file_uploader("IPS success file (.xlsx)", type=["xlsx"], key="ips_file", label_visibility="collapsed")
+    ips_file = st.file_uploader("IPS", type=["xlsx"], key="ips_file", label_visibility="collapsed")
     st.markdown("<br>", unsafe_allow_html=True)
     if st.button("Generate IPS Report", use_container_width=True, key="btn_ips"):
         if not ips_file:
@@ -320,11 +302,11 @@ if active == "IPS":
 # ══════════════════════════════
 elif active == "QR":
     st.markdown('<div class="report-card">', unsafe_allow_html=True)
-    card_header("⬛ QR Successful Transaction Report",
+    card_header('<i class="fa-solid fa-qrcode"></i> QR Successful Transaction Report',
                 "EthioPay QR interoperable transactions — sorted A to Z with totals")
     report_date_qr = st.date_input("Report Date", value=date.today(), key="qr_date")
     upload_label("QR Success File")
-    qr_file = st.file_uploader("QR success file (.xlsx)", type=["xlsx"], key="qr_file", label_visibility="collapsed")
+    qr_file = st.file_uploader("QR", type=["xlsx"], key="qr_file", label_visibility="collapsed")
     st.markdown("<br>", unsafe_allow_html=True)
     if st.button("Generate QR Report", use_container_width=True, key="btn_qr"):
         if not qr_file:
@@ -347,16 +329,16 @@ elif active == "QR":
 # ══════════════════════════════
 elif active == "P2P":
     st.markdown('<div class="report-card">', unsafe_allow_html=True)
-    card_header("🔄 IPS-P2P Success Rate Report",
+    card_header('<i class="fa-solid fa-arrow-right-arrow-left"></i> IPS-P2P Success Rate Report',
                 "Color-coded success rate per FI — Green ≥98.7% · Yellow 96–98.7% · Red ≤96%")
     report_date_p2p = st.date_input("Report Date", value=date.today(), key="p2p_date")
     col1, col2 = st.columns(2)
     with col1:
         upload_label("Decline / Error Report")
-        error_file = st.file_uploader("Decline file", type=["xlsx"], key="p2p_error", label_visibility="collapsed")
+        error_file = st.file_uploader("Decline", type=["xlsx"], key="p2p_error", label_visibility="collapsed")
     with col2:
         upload_label("IPS Success Report")
-        success_file_p2p = st.file_uploader("Success file", type=["xlsx"], key="p2p_success", label_visibility="collapsed")
+        success_file_p2p = st.file_uploader("Success", type=["xlsx"], key="p2p_success", label_visibility="collapsed")
     st.markdown("<br>", unsafe_allow_html=True)
     if st.button("Generate P2P Report", use_container_width=True, key="btn_p2p"):
         if not error_file or not success_file_p2p:
@@ -380,16 +362,16 @@ elif active == "P2P":
 # ══════════════════════════════
 elif active == "POS":
     st.markdown('<div class="report-card">', unsafe_allow_html=True)
-    card_header("🏪 POS Successful With Value Report",
+    card_header('<i class="fa-solid fa-credit-card"></i> POS Successful With Value Report',
                 "Point of Sale — successful purchase transactions as Issuer & Acquirer")
     report_date_pos = st.date_input("Report Date", value=date.today(), key="pos_date")
     col3, col4 = st.columns(2)
     with col3:
         upload_label("Issuer Report")
-        issuer_file = st.file_uploader("Issuer file", type=["xlsx"], key="pos_issuer", label_visibility="collapsed")
+        issuer_file = st.file_uploader("Issuer", type=["xlsx"], key="pos_issuer", label_visibility="collapsed")
     with col4:
         upload_label("Acquirer Report")
-        acquirer_file = st.file_uploader("Acquirer file", type=["xlsx"], key="pos_acquirer", label_visibility="collapsed")
+        acquirer_file = st.file_uploader("Acquirer", type=["xlsx"], key="pos_acquirer", label_visibility="collapsed")
     st.markdown("<br>", unsafe_allow_html=True)
     if st.button("Generate POS Report", use_container_width=True, key="btn_pos"):
         if not issuer_file or not acquirer_file:
@@ -413,11 +395,11 @@ elif active == "POS":
 # ══════════════════════════════
 elif active == "POSR":
     st.markdown('<div class="report-card">', unsafe_allow_html=True)
-    card_header("✅ POS Success Rate Report",
+    card_header('<i class="fa-solid fa-chart-line"></i> POS Success Rate Report',
                 "POS transaction success rate analysis from SmartVista raw export")
     report_date_posr = st.date_input("Report Date", value=date.today(), key="posr_date")
     upload_label("SmartVista POS Raw Transaction Export")
-    posr_file = st.file_uploader("POS raw export", type=["xlsx"], key="posr_file", label_visibility="collapsed")
+    posr_file = st.file_uploader("POS raw", type=["xlsx"], key="posr_file", label_visibility="collapsed")
     st.markdown("<br>", unsafe_allow_html=True)
     if st.button("Generate POS Success Rate Report", use_container_width=True, key="btn_posr"):
         if not posr_file:
