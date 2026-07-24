@@ -132,7 +132,7 @@ def generate_report(input_path, output_path, report_date):
     ws["B3"].font = Font(bold=True, size=12); ws["B3"].alignment = Alignment(horizontal="center")
 
     ws.merge_cells("B4:F4")
-    ws["B4"] = f"Successful IPS Interoperable Transactions Held From {date_str}"
+    ws["B4"] = f"Successful IPS Interoperable Transactions Held on {date_str}"
     ws["B4"].font = Font(bold=True, size=11, color=BLACK)
     ws["B4"].fill = make_fill(WHITE); ws["B4"].alignment = Alignment(horizontal="center")
 
@@ -175,14 +175,13 @@ def generate_report(input_path, output_path, report_date):
     last_data = total_row - 1
     ws[f"B{total_row}"] = "TOTAL"
     ws[f"B{total_row}"].fill = make_fill(GREEN)
-    ws[f"B{total_row}"].font = Font(size=11, color=BLACK)
+    ws[f"B{total_row}"].font = Font(bold=True, size=11, color=BLACK, underline="single")
     ws[f"B{total_row}"].border = thin_border()
 
     for col, fmt in [("C", '#,##0'), ("D", '#,##0.00'), ("E", '#,##0'), ("F", '#,##0.00')]:
         cell = ws[f"{col}{total_row}"]
         cell.value = f"=SUM({col}{data_start}:{col}{last_data})"
-        cell.font = Font(bold=True, size=11)
-        cell.fill = make_fill(GREEN)
+        cell.font = Font(bold=True, size=11, underline="single")
         cell.border = thin_border()
         cell.alignment = Alignment(horizontal="right")
         cell.number_format = fmt
