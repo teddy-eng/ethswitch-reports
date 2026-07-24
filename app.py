@@ -90,9 +90,9 @@ st.markdown(f"""
   }}
   .stTabs [data-baseweb="tab"] {{
     background: #0f142a !important;
-    border: 1.5px solid #f27421 !important;
+    border: 1.5px solid #00b050 !important;
     border-radius: 7px !important;
-    color: #f27421 !important;
+    color: #00b050 !important;
     font-weight: 800 !important;
     font-size: 0.82rem !important;
     padding: 6px 14px !important;
@@ -100,7 +100,7 @@ st.markdown(f"""
     flex-shrink: 0 !important;
   }}
   .stTabs [data-baseweb="tab"] p {{
-    color: #f27421 !important;
+    color: #00b050 !important;
     font-weight: 800 !important;
   }}
   .stTabs [data-baseweb="tab"][aria-selected="true"] {{
