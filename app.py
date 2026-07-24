@@ -31,7 +31,7 @@ ethiopay_b64  = img_to_b64("ethiopay_logo.png")
 
 st.markdown(f"""
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
   @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css');
 
   html, body, [class*="css"],
@@ -56,7 +56,7 @@ st.markdown(f"""
   .navbar-left img {{ height:60px; object-fit:contain; }}
   .navbar-center {{ display:flex; flex-direction:column; align-items:center; }}
   .navbar-app-name {{
-    font-family:'Syne',sans-serif;
+    font-family:'Times New Roman', Times, Georgia, serif;
     font-size:1.6rem; font-weight:800;
     color:#f27421; white-space:nowrap;
   }}
@@ -71,7 +71,7 @@ st.markdown(f"""
     text-align:center;
   }}
   .hero-title {{
-    font-family:'Syne',sans-serif;
+    font-family:'Times New Roman', Times, Georgia, serif;
     font-size:1.5rem; font-weight:800;
     color:#f27421; letter-spacing:0.05em;
     text-transform:uppercase;
@@ -121,7 +121,7 @@ st.markdown(f"""
     margin-bottom:1rem;
   }}
   .report-card-title {{
-    font-family:'Syne',sans-serif;
+    font-family:'Times New Roman', Times, Georgia, serif;
     font-size:1.1rem; font-weight:800;
     color:#f27421; margin-bottom:0.2rem;
   }}
