@@ -109,20 +109,31 @@ st.markdown(f"""
     border: 1px solid rgba(242,116,33,0.2);
     gap: 2px;
   }}
-  .stTabs [data-baseweb="tab"] {{
-    font-size: 0.88rem;
-    font-weight: 700;
+  /* Tab overrides — aggressive */
+  button[data-baseweb="tab"] {{
     color: #ffffff !important;
-    border-radius: 7px;
-    padding: 0.5rem 1rem;
-    border: 1px solid rgba(242,116,33,0.3) !important;
-    background: rgba(242,116,33,0.08) !important;
+    font-weight: 700 !important;
+    font-size: 0.88rem !important;
+    background: rgba(242,116,33,0.1) !important;
+    border: 1px solid rgba(242,116,33,0.35) !important;
+    border-radius: 7px !important;
+    opacity: 1 !important;
   }}
-  .stTabs [aria-selected="true"] {{
-    background: #f27421 !important;
+  button[data-baseweb="tab"] p {{
     color: #ffffff !important;
-    font-weight: 700;
+    font-weight: 700 !important;
+    opacity: 1 !important;
+  }}
+  button[data-baseweb="tab"][aria-selected="true"] {{
+    background: #f27421 !important;
     border: 1px solid #f27421 !important;
+  }}
+  button[data-baseweb="tab"][aria-selected="true"] p {{
+    color: #ffffff !important;
+  }}
+  button[data-baseweb="tab"][aria-selected="false"] p {{
+    color: #ffffff !important;
+    opacity: 1 !important;
   }}
   .stTabs [data-baseweb="tab-highlight"] {{ display: none; }}
 
@@ -492,6 +503,34 @@ with tab5:
                 except Exception as e:
                     st.error(f"Error: {e}")
     st.markdown('</div>', unsafe_allow_html=True)
+
+
+# ── JS fix for tab visibility ──
+st.markdown("""
+<script>
+function fixTabs() {
+  const tabs = document.querySelectorAll('button[data-baseweb="tab"]');
+  tabs.forEach(tab => {
+    tab.style.color = '#ffffff';
+    tab.style.fontWeight = '700';
+    tab.style.opacity = '1';
+    tab.style.border = '1px solid rgba(242,116,33,0.35)';
+    tab.style.borderRadius = '7px';
+    tab.style.background = 'rgba(242,116,33,0.1)';
+    const p = tab.querySelector('p');
+    if (p) { p.style.color = '#ffffff'; p.style.opacity = '1'; }
+    if (tab.getAttribute('aria-selected') === 'true') {
+      tab.style.background = '#f27421';
+      tab.style.border = '1px solid #f27421';
+    }
+  });
+}
+setTimeout(fixTabs, 500);
+setTimeout(fixTabs, 1000);
+setTimeout(fixTabs, 2000);
+document.addEventListener('click', () => setTimeout(fixTabs, 300));
+</script>
+""", unsafe_allow_html=True)
 
 # ── Footer ──
 st.markdown("""
