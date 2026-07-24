@@ -131,14 +131,19 @@ st.markdown(f"""
     border-left:3px solid #f27421; padding-left:0.6rem;
   }}
   .upload-label {{
-    font-size:0.95rem; font-weight:700;
-    color:#f27421; text-transform:uppercase;
-    letter-spacing:0.07em; margin-bottom:4px;
+    font-size:0.95rem;
+    font-weight:700;
+    color:#f27421;
+    text-transform:uppercase;
+    letter-spacing:0.07em;
+    margin-bottom:4px;
     font-family:'Times New Roman', Times, Georgia, serif;
   }}
   [data-testid="stDateInput"] label {{
-    color:#f27421 !important; font-weight:700 !important;
-    font-size:0.95rem !important; text-transform:uppercase !important;
+    color:#f27421 !important;
+    font-weight:700 !important;
+    font-size:0.95rem !important;
+    text-transform:uppercase !important;
     letter-spacing:0.07em !important;
     font-family:'Times New Roman', Times, Georgia, serif !important;
   }}
