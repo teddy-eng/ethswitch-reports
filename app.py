@@ -124,6 +124,10 @@ st.markdown(f"""
     font-weight: 700 !important;
     opacity: 1 !important;
   }}
+  button[data-baseweb="tab"] * {{
+    color: #ffffff !important;
+    opacity: 1 !important;
+  }}
   button[data-baseweb="tab"][aria-selected="true"] {{
     background: #f27421 !important;
     border: 1px solid #f27421 !important;
@@ -191,6 +195,50 @@ st.markdown(f"""
     border-radius: 8px !important;
   }}
 
+  /* ── Date-picker calendar popup ── */
+  /* This floats outside the app's main container, so it needs its own
+     explicit dark styling — it was previously unstyled and would render
+     using whatever browser/theme default colors were active. */
+  div[data-baseweb="popover"] {{
+    z-index: 9999 !important;
+  }}
+  div[data-baseweb="calendar"] {{
+    background: #1a2240 !important;
+    border: 1px solid #f27421 !important;
+    border-radius: 10px !important;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.55) !important;
+    padding: 0.4rem !important;
+  }}
+  div[data-baseweb="calendar"] * {{
+    color: #ffffff !important;
+  }}
+  /* Month/year header and nav arrows */
+  div[data-baseweb="calendar"] [data-baseweb="select"] {{
+    background: #0f142a !important;
+    border: 1px solid rgba(242,116,33,0.4) !important;
+    border-radius: 6px !important;
+  }}
+  /* Individual day cells */
+  div[data-baseweb="calendar"] div[role="gridcell"] {{
+    background: transparent !important;
+  }}
+  div[data-baseweb="calendar"] div[role="gridcell"]:hover {{
+    background: rgba(242,116,33,0.25) !important;
+    border-radius: 6px !important;
+  }}
+  /* Selected day */
+  div[data-baseweb="calendar"] div[aria-selected="true"] {{
+    background: #f27421 !important;
+    color: #ffffff !important;
+    border-radius: 6px !important;
+    font-weight: 700 !important;
+  }}
+  /* Today marker */
+  div[data-baseweb="calendar"] div[aria-label*="Today"] {{
+    border: 1px solid #f27421 !important;
+    border-radius: 6px !important;
+  }}
+
   /* ── File uploader ── */
   [data-testid="stFileUploader"] {{
     background: #0f142a;
@@ -204,6 +252,27 @@ st.markdown(f"""
   [data-testid="stFileUploader"] label {{
     color: rgba(255,255,255,0.6) !important;
     font-size: 0.83rem !important;
+  }}
+  /* Browse-files button (previously unstyled → invisible in light theme) */
+  [data-testid="stFileUploader"] button,
+  [data-testid="stFileUploaderDropzone"] button,
+  [data-testid="stBaseButton-secondary"] {{
+    background: #f27421 !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 7px !important;
+    font-weight: 700 !important;
+  }}
+  [data-testid="stFileUploader"] button:hover {{
+    background: #d9661a !important;
+  }}
+  /* Uploaded filename row + remove (x) icon */
+  [data-testid="stFileUploader"] [data-testid="stFileUploaderFile"],
+  [data-testid="stFileUploaderFileName"] {{
+    color: #ffffff !important;
+  }}
+  [data-testid="stFileUploader"] svg {{
+    fill: #ffffff !important;
   }}
 
   /* ── Buttons ── */
@@ -517,8 +586,8 @@ function fixTabs() {
     tab.style.border = '1px solid rgba(242,116,33,0.35)';
     tab.style.borderRadius = '7px';
     tab.style.background = 'rgba(242,116,33,0.1)';
-    const p = tab.querySelector('p');
-    if (p) { p.style.color = '#ffffff'; p.style.opacity = '1'; }
+    const p = tab.querySelectorAll('*');
+    p.forEach(el => { el.style.color = '#ffffff'; el.style.opacity = '1'; });
     if (tab.getAttribute('aria-selected') === 'true') {
       tab.style.background = '#f27421';
       tab.style.border = '1px solid #f27421';
