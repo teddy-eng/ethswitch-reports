@@ -139,6 +139,23 @@ st.markdown(f"""
     color: #ffffff !important;
     opacity: 1 !important;
   }}
+  /* Explicit hover/focus/active states — a tab can look dim when the
+     cursor/keyboard focus is on it if these aren't covered separately */
+  button[data-baseweb="tab"]:hover,
+  button[data-baseweb="tab"]:focus,
+  button[data-baseweb="tab"]:active,
+  button[data-baseweb="tab"]:focus-visible {{
+    color: #ffffff !important;
+    opacity: 1 !important;
+    background: rgba(242,116,33,0.2) !important;
+  }}
+  button[data-baseweb="tab"]:hover *,
+  button[data-baseweb="tab"]:focus *,
+  button[data-baseweb="tab"]:active *,
+  button[data-baseweb="tab"]:focus-visible * {{
+    color: #ffffff !important;
+    opacity: 1 !important;
+  }}
   .stTabs [data-baseweb="tab-highlight"] {{ display: none; }}
 
   /* ── Report cards ── */
@@ -577,27 +594,36 @@ with tab5:
 # ── JS fix for tab visibility ──
 st.markdown("""
 <script>
+function setImp(el, prop, val) {
+  el.style.setProperty(prop, val, 'important');
+}
 function fixTabs() {
   const tabs = document.querySelectorAll('button[data-baseweb="tab"]');
   tabs.forEach(tab => {
-    tab.style.color = '#ffffff';
-    tab.style.fontWeight = '700';
-    tab.style.opacity = '1';
-    tab.style.border = '1px solid rgba(242,116,33,0.35)';
-    tab.style.borderRadius = '7px';
-    tab.style.background = 'rgba(242,116,33,0.1)';
-    const p = tab.querySelectorAll('*');
-    p.forEach(el => { el.style.color = '#ffffff'; el.style.opacity = '1'; });
-    if (tab.getAttribute('aria-selected') === 'true') {
-      tab.style.background = '#f27421';
-      tab.style.border = '1px solid #f27421';
-    }
+    const selected = tab.getAttribute('aria-selected') === 'true';
+    setImp(tab, 'color', '#ffffff');
+    setImp(tab, 'font-weight', '700');
+    setImp(tab, 'opacity', '1');
+    setImp(tab, 'border', selected ? '1px solid #f27421' : '1px solid rgba(242,116,33,0.35)');
+    setImp(tab, 'border-radius', '7px');
+    setImp(tab, 'background', selected ? '#f27421' : 'rgba(242,116,33,0.1)');
+    tab.querySelectorAll('*').forEach(el => {
+      setImp(el, 'color', '#ffffff');
+      setImp(el, 'opacity', '1');
+    });
   });
 }
-setTimeout(fixTabs, 500);
-setTimeout(fixTabs, 1000);
-setTimeout(fixTabs, 2000);
-document.addEventListener('click', () => setTimeout(fixTabs, 300));
+setTimeout(fixTabs, 300);
+setTimeout(fixTabs, 800);
+setTimeout(fixTabs, 1500);
+setTimeout(fixTabs, 3000);
+document.addEventListener('click', () => setTimeout(fixTabs, 200));
+document.addEventListener('mouseover', (e) => {
+  if (e.target.closest && e.target.closest('button[data-baseweb="tab"]')) {
+    fixTabs();
+  }
+});
+document.addEventListener('focusin', () => setTimeout(fixTabs, 50));
 </script>
 """, unsafe_allow_html=True)
 
